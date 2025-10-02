@@ -28,13 +28,86 @@ void solve() {
     int taga = -1, tagb = -1;
     int cnta = 0, cntb = 0;
 
-    s[0] == 'a' ? taga = 0 : tagb = 0;
+    if (s.front() == 'a') {
+        taga = 0;
+        ++cnta;
+    }
+    else {
+        tagb = 0;
+        ++cntb;
+    }
 
     for (int i=1 ; i<n ; ++i) {
         if (s[i] == 'a') {
-            l[i]
+            
+            if (taga != -1) 
+                l[i][0] = (i - taga - 1) * cnta;
+            
+            ++cnta;
+            taga = i;
         }
-    }   
+        else {
+
+            if (tagb != -1) 
+                l[i][1] = (i - tagb - 1) * cntb;
+            
+            ++cntb;
+            tagb = i;
+        }
+
+        l[i][0] += l[i - 1][0];
+        l[i][1] += l[i - 1][1];
+    }
+
+    taga = tagb = -1;
+    cnta = cntb = 0;
+
+    
+    if (s.back() == 'a') {
+        taga = n - 1;
+        ++cnta;
+    }
+    else {
+        tagb = n - 1;
+        ++cntb;
+    }
+
+    for (int i=n - 2 ; i>=0 ; --i) {
+        if (s[i] == 'a') {
+
+            if (taga != -1)               
+                r[i][0] = (taga - i - 1) * cnta;
+            
+            ++cnta;
+            taga = i;
+        }
+        else {
+
+            if (tagb != -1) 
+                r[i][1] = (tagb - i - 1) * cntb;
+            
+            ++cntb;
+            tagb = i;
+        }
+
+        r[i][0] += r[i + 1][0];
+        r[i][1] += r[i + 1][1];
+    }
+
+    int ans = INT_MAX;
+    for(int i=0 ; i<n ; ++i) {
+        if (s[i] == 'a') {
+            // cout << l[i][0] << ' ' << r[i][0] << '\n';
+            ans = min(ans, l[i][0] + r[i][0]);
+        }
+        else {
+            // cout << l[i][1] << ' ' << r[i][1] << '\n';
+            ans = min(ans, l[i][1] + r[i][1]);
+        }
+        
+    }
+
+    cout << ans << '\n';
 }
   
 
