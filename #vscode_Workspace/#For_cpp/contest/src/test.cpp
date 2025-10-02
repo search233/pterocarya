@@ -12,59 +12,7 @@ const double pi = acos(-1.0);
 double a[N], b[2 * N];
 
 void solve() {
-    int n, k;
-    cin >> n >> k;
-    k++;
-
-    int lena = 0; // a 的长度
-    for (int i = 1; i <= n; i++) {
-        double x, y;
-        cin >> x >> y;
-        if (y > 0) {
-            if (x == 0) a[lena++] = pi / 2;
-            else if (x > 0) a[lena++] = atan(y / x);
-            else a[lena++] = pi - atan(y / abs(x));
-        }
-        else if (y < 0) {
-            if (x == 0) a[lena++] = pi / 2 + pi;
-            else if (x > 0) a[lena++] = 2 * pi - atan(abs(y) / x);
-            else a[lena++] = atan(y / x) + pi;
-        }
-        else {
-            if (x > 0) a[lena++] = 0;
-            else a[lena++] = pi;
-        }
-    }
-
-    sort(a, a + lena);
-
-    int lenb = 0;
-    for (int i = 0; i < lena; i++) b[lenb++] = a[i];
-    for (int i = 0; i < lena; i++) b[lenb++] = a[i];
-
-    int r = 0;
-    double mnl = 0, mnr = 0, mx = 0;
-    for (int i = 0; i < lena; i++) {
-        // while (r < lenb && r - i + 1 < k) {
-        //     r++;
-        // }
-        // if (r == lenb) break;
-
-        r = i + k - 1;
-        double cha = 0;
-        if (r < lena) {
-            cha = b[r] - b[i];
-        } else {
-            cha = 2 * pi - b[i] + b[r];
-        }
-
-        if (cha > mx) {
-            mx = cha;
-            mnr = r;
-            mnl = i;
-        }
-    }
-    printf("%.7lf\n", mx);
+    cout << 11 << '\n';
 }
 
 signed main() {

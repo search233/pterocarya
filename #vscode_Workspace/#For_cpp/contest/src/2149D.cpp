@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2149/D
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -21,14 +19,22 @@ void solve() {
 
     string s; cin >> s;
 
-    vector<arr2> a(n + 1);
+    //0: a
+    //1: b
+    vector<arr2> l(n + 1);
+    vector<arr2> r(n + 1);
 
+
+    int taga = -1, tagb = -1;
     int cnta = 0, cntb = 0;
 
+    s[0] == 'a' ? taga = 0 : tagb = 0;
 
     for (int i=1 ; i<n ; ++i) {
-        
-    }
+        if (s[i] == 'a') {
+            l[i]
+        }
+    }   
 }
   
 
