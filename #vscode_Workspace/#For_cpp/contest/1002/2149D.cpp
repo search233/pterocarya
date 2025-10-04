@@ -5,8 +5,8 @@
 
 using namespace std;
 using ll = long long;
-using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
+using arr2 = array<ll, 2>;
+using arr3 = array<ll, 3>;
 const int N = (int)2e5 + 9;
 const int M = (int)1e5 + 9;
 const int mod =  998244353;
@@ -25,8 +25,8 @@ void solve() {
     vector<arr2> r(n + 1);
 
 
-    int taga = -1, tagb = -1;
-    int cnta = 0, cntb = 0;
+    ll taga = -1, tagb = -1;
+    ll cnta = 0, cntb = 0;
 
     if (s.front() == 'a') {
         taga = 0;
@@ -94,7 +94,7 @@ void solve() {
         r[i][1] += r[i + 1][1];
     }
 
-    int ans = INT_MAX;
+    ll ans = LLONG_MAX;
     for(int i=0 ; i<n ; ++i) {
         if (s[i] == 'a') {
             // cout << l[i][0] << ' ' << r[i][0] << '\n';
