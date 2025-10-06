@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2152/C
 
 #include <bits/stdc++.h>
 #define pb push_back
