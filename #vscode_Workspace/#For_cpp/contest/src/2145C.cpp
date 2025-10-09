@@ -19,80 +19,31 @@ void solve() {
     int n; cin >> n;
 
     string s; cin >> s;
-    vector<arr2> arr;
 
-    int cnt = 0;
+    int dif = 0;
     for (int i=0 ; i<n ; ++i) {
-        if (s[i] == 'a') ++cnt;
-        if (arr.empty() || s[i] - 'a' != arr.back()[0]) arr.push_back({s[i] - 'a', 1});
-        else ++arr.back()[1];
+        if (s[i] == 'a') ++dif;
+        else --dif;
     }
 
-    // for (auto [ch, cnt] : arr) {
-    //     cout << (char)(ch + 'a') << ' ' << cnt << '\n';
-    // }
-    if (cnt * 2 == n) {
-        cout << "0\n";
-        return;
-    }
+    int sum = 0;
+    map<int, int> mp;
+    int ans = n;
 
-    int dif = n - 2 * cnt;
+    mp[sum] = 0;
 
-    int ans = INT_MAX;
+    for (int i=0 ; i<n ; ++i) {
+        if (s[i] == 'a') ++sum;
+        else --sum;
 
-    if (dif > 0) { //b
-        for (int i=0 ; i<arr.size() ; ++i) {
-            if (arr[i][0] == 1) {
-                if (arr[i][1] >= dif) {
-                    cout << (dif != n ? dif : -1) << '\n';
-                    return;
-                }
-                else  {
-                    int pos = i, sum = 0, temp = arr[i][1];
-                    while (pos < arr.size() - 2 && arr[pos+2][1] > arr[pos+1][1]){
-                        sum += arr[pos+1][1] * 2;
-                        temp += arr[pos+2][1] - arr[pos+1][1];
-
-                        if (temp <= arr[pos+2][1]) break;
-                        if (temp >= dif) {
-                            ans = min(ans, sum + dif);
-                        }
-                        pos += 2;
-                    }
-                }
-            }            
-        }
-    }
-    else {
-        dif = -dif;
-        for (int i=0 ; i<arr.size() ; ++i) {
-            if (arr[i][0] == 0) {
-                if (arr[i][1] >= dif) {
-                    cout << (dif != n ? dif : -1) << '\n';
-                    return;
-                }
-                else  {
-                    int pos = i, sum = 0, temp = arr[i][1];
-                    while (pos < arr.size() - 2 && arr[pos+2][1] > arr[pos+1][1]){
-                        sum += arr[pos+1][1] * 2;
-                        temp += arr[pos+2][1] - arr[pos+1][1];
-
-                        if (temp <= arr[pos+2][1]) break;
-                        if (temp >= dif) {
-                            ans = min(ans, sum + dif);
-                        }
-                        pos += 2;
-                    }
-                }
-            }            
+        mp[sum] = 1 + i;
+ 
+        if (mp.count(sum - dif)) {
+            ans = min(ans, i - mp[sum - dif] + 1);
         }
     }
 
-    // cout << n << '\n';
-
-    if (ans == n) cout << -1 << '\n';
-    else cout << ans << '\n';
-
+    cout << (ans != n ? ans : -1) << '\n';
 } 
 
 signed main() {
