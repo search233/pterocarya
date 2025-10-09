@@ -1,7 +1,8 @@
-//https://codeforces.com/problemset/problem/2152/C
+//https://codeforces.com/problemset/problem/2145/C
 
 #include <bits/stdc++.h>
-#define pb push_back
+#define int long long
+
 
 using namespace std;
 using ll = long long;
@@ -15,34 +16,86 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    int n, q;
-    cin >> n >> q;
+    int n; cin >> n;
 
-    vector<int> a(n + 1);
-    vector<arr2> sum(n + 1);
+    string s; cin >> s;
+    vector<arr2> arr;
 
-    for (int i=1 ; i<=n ; ++i) {
-        cin >> a[i];
-        ++sum[i][a[i]];
-
-        sum[i][0] += sum[i - 1][0];
-        sum[i][1] += sum[i - 1][1];
+    int cnt = 0;
+    for (int i=0 ; i<n ; ++i) {
+        if (s[i] == 'a') ++cnt;
+        if (arr.empty() || s[i] - 'a' != arr.back()[0]) arr.push_back({s[i] - 'a', 1});
+        else ++arr.back()[1];
     }
 
+    // for (auto [ch, cnt] : arr) {
+    //     cout << (char)(ch + 'a') << ' ' << cnt << '\n';
+    // }
+    if (cnt * 2 == n) {
+        cout << "0\n";
+        return;
+    }
 
-    for (int i=0 ; i<q ; ++i) {
-        int l, r; cin >> l >> r;
+    int dif = n - 2 * cnt;
 
-        if ((sum[l][0] - sum[r - 1][0]) % 3 || (sum[l][1] - sum[r - 1][1]) % 3) {
-            cout << "-1\n";
-            return;
+    int ans = INT_MAX;
+
+    if (dif > 0) { //b
+        for (int i=0 ; i<arr.size() ; ++i) {
+            if (arr[i][0] == 1) {
+                if (arr[i][1] >= dif) {
+                    cout << (dif != n ? dif : -1) << '\n';
+                    return;
+                }
+                else  {
+                    int pos = i, sum = 0, temp = arr[i][1];
+                    while (pos < arr.size() - 2 && arr[pos+2][1] > arr[pos+1][1]){
+                        sum += arr[pos+1][1] * 2;
+                        temp += arr[pos+2][1] - arr[pos+1][1];
+
+                        if (temp <= arr[pos+2][1]) break;
+                        if (temp >= dif) {
+                            ans = min(ans, sum + dif);
+                        }
+                        pos += 2;
+                    }
+                }
+            }            
         }
-
-        
     }
+    else {
+        dif = -dif;
+        for (int i=0 ; i<arr.size() ; ++i) {
+            if (arr[i][0] == 0) {
+                if (arr[i][1] >= dif) {
+                    cout << (dif != n ? dif : -1) << '\n';
+                    return;
+                }
+                else  {
+                    int pos = i, sum = 0, temp = arr[i][1];
+                    while (pos < arr.size() - 2 && arr[pos+2][1] > arr[pos+1][1]){
+                        sum += arr[pos+1][1] * 2;
+                        temp += arr[pos+2][1] - arr[pos+1][1];
+
+                        if (temp <= arr[pos+2][1]) break;
+                        if (temp >= dif) {
+                            ans = min(ans, sum + dif);
+                        }
+                        pos += 2;
+                    }
+                }
+            }            
+        }
+    }
+
+    // cout << n << '\n';
+
+    if (ans == n) cout << -1 << '\n';
+    else cout << ans << '\n';
+
 } 
 
-int main() {
+signed main() {
     
     ios::sync_with_stdio(0);
     cin.tie(0);
