@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2146/D1
+//https://codeforces.com/problemset/problem/2152/D
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -15,42 +15,43 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    ll l, r; 
-    cin >> l >> r;
+    int n, q;
+    cin >> n >> q;
 
-    // cout << (r + 1) * r << '\n';
+    vector<int> a(n + 1);
+    vector<arr2> sum(n + 1); 
 
-    vector<ll> ans(r - l + 5);
-
-    auto cal = [&](ll num) -> ll {
-        ll fac = 1, res = 0;
-
-        while (num) {
-            if (!(num & 1)) {
-                res += fac;
-            }
-
-            num >>= 1;
-            fac <<= 1ll;
+    auto cal = [&](int i) -> void {
+        int cnt1 = 0, tmp = a[i];
+        int cnt = 0;
+        while (tmp) {
+            if (tmp & 1) ++cnt1;
+            tmp >>= 1;
+            ++cnt;
         }
 
-        return res;
+        if (cnt1 == 2 && a[i] & 1) sum[i][1] = 1;
+        if (cnt1 == 1) sum[i][0] = cnt - 1;
+        else  sum[i][0] = cnt;
     };
 
-    for (int i=r ; i>=l ; --i) {
-        // cout << i << ' ' << cal(i) << '\n';
+    for (int i=1 ; i<=n ; ++i) {
+        cin >> a[i];
+        cal(i);
+        // cout << sum[i][0] << ' ' << sum[i][1] << '\n';   
 
-        if (!ans[i - l]) {
-            ll tmp = cal(i);
-            if (tmp >= l) {
-                ans[i - l] = tmp;
-                ans[tmp - l] = i;
-            }
-        }
+        sum[i][0] += sum[i - 1][0];
+        sum[i][1] += sum[i - 1][1];
     }
 
-    for (int i=l ; i<=r ; ++i) {
-        cout << ans[i - l] << " \n"[i == r];
+    for (int i=0 ; i<q ; ++i) {
+        int l, r; cin >> l >> r;
+
+        int ans = sum[r][0] - sum[l - 1][0];
+
+        ans -= (sum[r][1] - sum[l - 1][1] + 1) / 2;
+
+        cout <<  ans << '\n';
     }
 } 
 
