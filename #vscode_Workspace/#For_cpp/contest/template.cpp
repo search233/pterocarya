@@ -17,7 +17,7 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-
+    
 } 
 
 int main() {
