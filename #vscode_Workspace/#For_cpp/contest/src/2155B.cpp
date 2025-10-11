@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2155/A
+//https://codeforces.com/problemset/problem/2155/B
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -15,23 +15,54 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    int n; cin >> n;
+    int n, k;
+    cin >> n >> k;
 
-    int ans = 1;
-    int num1 = (n + 1) / 2, num2 =n / 2;
-    ans += num2;
+    vector<vector<char>> a(n + 1, vector<char> (n + 1, 'D'));
 
-    while (num1 != 1 || num2 != 1) {
-        // cout << ans << '\n';
-        ans += num1 / 2;
-        ans += num2 / 2;
+    int left = n * n - k;
 
-        num2 = (num2 + 1) / 2;
-        num2 += num1 / 2;
-        num1 = (num1 + 1) / 2;
+    if (left == 1) {
+        cout << "NO\n";
+        return;
     }
 
-    cout << ans <<'\n';
+    cout << "YES\n";
+
+    if (left <= n) {
+        for (int i=1 ; i<left ; ++i) {
+            a[1][i] = 'R';
+        }
+        a[1][left] = 'L';
+    }
+    else {
+        for (int i=1 ; i<n ; ++i) {
+            a[1][i] = 'R';
+        }
+        a[1][n] = 'L';
+
+        left -= n;
+        int x = 2, y = 1;
+
+        while (left) {
+            a[x][y] = 'U';
+
+            ++y;
+
+            if (y > n) {
+                y = 1;
+                ++x;
+            }
+            --left;
+        }
+    }
+
+    for (int i=1 ; i<=n ; ++i) {
+        for (int j=1 ; j<=n ; ++j) {
+            cout << a[i][j];
+        }
+        cout << '\n';
+    }
 } 
 
 int main() {

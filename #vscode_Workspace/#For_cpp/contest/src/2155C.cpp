@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2155/A
+//https://codeforces.com/problemset/problem/2155/C
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -9,7 +9,7 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const int N = (int)2e5 + 9;
 const int M = (int)1e5 + 9;
-const int mod =  998244353;
+const int mod =  676767677;
 const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
@@ -17,21 +17,80 @@ const double PI = acos(-1.0);
 void solve() {
     int n; cin >> n;
 
-    int ans = 1;
-    int num1 = (n + 1) / 2, num2 =n / 2;
-    ans += num2;
+    vector<int> a(n);
 
-    while (num1 != 1 || num2 != 1) {
-        // cout << ans << '\n';
-        ans += num1 / 2;
-        ans += num2 / 2;
-
-        num2 = (num2 + 1) / 2;
-        num2 += num1 / 2;
-        num1 = (num1 + 1) / 2;
+    for (int i=0 ; i<n ; ++i) {
+        cin >> a[i];
     }
 
-    cout << ans <<'\n';
+    vector<arr2> tag(n + 1);
+    vector<int> sum(n);
+
+    for (int i=1 ; i<n ; ++i) {
+        if (a[i] == a[i - 1]) {
+            if (tag[i][1]) tag[i - 1][0] = 1;
+            else if (tag[i][0]) tag[i - 1][1] = 1;
+        }
+        else {
+            if (a[i] - a[i - 1] == 1) {
+                tag[i - 1][0] = tag[i][0] = 1;
+            }
+            else if (a[i - 1] - a[i] == 1) {
+                tag[i - 1][1] = tag[i][1] = 1;
+            }
+            else {
+                cout << "01\n";
+                return;
+            }
+        }
+    }
+
+    int cnt = (tag[n - 1][1] ? 1 : 0);
+    sum[n - 1] = 1;
+
+    for (int i=n-2 ; i>=0 ; --i) {
+        if (a[i] == a[i + 1]) {
+            if (tag[i + 1][1]) tag[i][0] = 1;
+            if (tag[i + 1][0]) tag[i][1] = 1;
+        }
+
+        if (tag[i][1] && tag[i][0]) {
+            cout << "02\n";
+            return;
+        }
+
+        sum[i] = 1 + cnt; 
+        // cout << sum[i] << '\n';
+        if (tag[i][1]) ++cnt;
+    }
+
+    for (int i=0 ; i<n ; ++i) {
+        cout << sum[i] << " \n"[i == n - 1];
+    }
+return;
+
+    cnt = (tag[0][0] ? 1 : 0);
+    if (sum[0] != a[0]) {
+        cout << "03\n";
+        return;
+    }
+
+    for (int i=1 ; i<n ; ++i) {
+        sum[i] += cnt;
+        if (tag[i][0]) ++cnt;
+
+        if (sum[i] != a[i]) {
+            cout << "04\n";
+            return;
+        }
+    }
+
+    if (tag[0][0] || tag[0][1]) {
+        cout << "1\n";
+    }
+    else {
+        cout << "2\n";
+    }
 } 
 
 int main() {
@@ -44,7 +103,7 @@ int main() {
 
     while (_--) {
         solve();
-        // cout << "-----------" << '\n';
+        cout << "-----------" << '\n';
     }
 
     return 0;
