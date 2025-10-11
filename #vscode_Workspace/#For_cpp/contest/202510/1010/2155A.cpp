@@ -1,4 +1,3 @@
-//https://codeforces.com/problemset/problem/2155/A
 
 #include <bits/stdc++.h>
 #define pb push_back
