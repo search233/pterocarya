@@ -39,7 +39,7 @@ void solve() {
                 tag[i - 1][1] = tag[i][1] = 1;
             }
             else {
-                cout << "01\n";
+                cout << "0\n";
                 return;
             }
         }
@@ -55,7 +55,7 @@ void solve() {
         }
 
         if (tag[i][1] && tag[i][0]) {
-            cout << "02\n";
+            cout << "0\n";
             return;
         }
 
@@ -64,14 +64,28 @@ void solve() {
         if (tag[i][1]) ++cnt;
     }
 
-    for (int i=0 ; i<n ; ++i) {
-        cout << sum[i] << " \n"[i == n - 1];
+//     for (int i=0 ; i<n ; ++i) {
+//         cout << sum[i] << " \n"[i == n - 1];
+//     }
+// return;
+
+    if (!tag[0][0] && !tag[0][1]) {
+        if (n & 1 && a[0] == (n + 1) / 2) {
+            cout << "2\n";
+            return;
+        }
+        if (!(n & 1) && a[0] == n / 2 || a[0] == (n + 1) / 2) {
+            cout << "1\n";
+            return;
+        }
+
+        cout << "0\n";
+        return;
     }
-return;
 
     cnt = (tag[0][0] ? 1 : 0);
     if (sum[0] != a[0]) {
-        cout << "03\n";
+        cout << "0\n";
         return;
     }
 
@@ -103,7 +117,7 @@ int main() {
 
     while (_--) {
         solve();
-        cout << "-----------" << '\n';
+        // cout << "-----------" << '\n';
     }
 
     return 0;
