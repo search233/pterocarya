@@ -31,7 +31,7 @@ void solve() {
 
             int r = qu.front()[1];
 
-            cout << l << ' ' << r << '\n';
+            cout << l << ' ' << r << endl;
 
             int res; cin >> res;
 
