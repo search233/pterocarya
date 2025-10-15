@@ -1,7 +1,7 @@
-//https://codeforces.com/problemset/problem/2153/D
+//https://codeforces.com/problemset/problem/2160/D
 
 #include <bits/stdc++.h>
-#define int long long
+#define pb push_back
 
 using namespace std;
 using ll = long long;
@@ -15,10 +15,10 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-
+    
 } 
 
-signed main() {
+int main() {
     
     ios::sync_with_stdio(0);
     cin.tie(0);

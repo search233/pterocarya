@@ -1,6 +1,6 @@
-YES
-YES
-YES
-NO
-YES
-NO
+11
+11
+11
+11
+11
+11
