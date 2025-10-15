@@ -32,10 +32,10 @@ void solve() {
         int res; cin >> res;
 
         if (res) {
-            uknw.push_back(i);
+            knw.push_back(i);
             ans[i] = res;
         }
-        else  knw.push_back(i);
+        else  uknw.push_back(i);
     }
 
     for (int i=0 ; i<n ; ++i) {
