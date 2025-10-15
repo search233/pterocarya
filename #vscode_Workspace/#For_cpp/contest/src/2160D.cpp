@@ -15,7 +15,46 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    
+    int n; cin >> n;
+
+    vector<int> ans(n * 2 + 1);
+
+    vector<int> uknw;
+    uknw.push_back(1);
+
+    vector<int> knw;
+
+    for (int i=2 ; i<= n * 2 ; ++i) {
+        cout << "? " << uknw.size() + 1;
+        for (auto& num : uknw) cout << ' ' << num;
+        cout << ' ' << i <<  endl;
+
+        int res; cin >> res;
+
+        if (res) {
+            uknw.push_back(i);
+            ans[i] = res;
+        }
+        else  knw.push_back(i);
+    }
+
+    for (int i=0 ; i<n ; ++i) {
+
+        cout << "? " << n + 1;
+        for (auto& num : knw) cout << ' ' << num;
+        cout << ' ' << uknw[i] <<  endl;
+
+        int res; cin >> res;
+
+        ans[uknw[i]] = res;
+    }
+
+    cout << '!';
+    for (int i=1 ; i<=n * 2 ; ++i) {
+        cout << ' ' << ans[i];
+    }
+
+    cout << endl;
 } 
 
 int main() {
