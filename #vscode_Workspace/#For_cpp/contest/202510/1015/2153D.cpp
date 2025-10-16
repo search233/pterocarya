@@ -1,7 +1,6 @@
 //https://codeforces.com/problemset/problem/2153/D
 
 #include <bits/stdc++.h>
-#define int long long
 
 using namespace std;
 using ll = long long;
@@ -15,10 +14,46 @@ const double PI = acos(-1.0);
 
 
 void solve() {
+    int n; cin >> n;
 
+    deque<ll> a;
+
+    for (int i=0 ; i<n ; ++i) {
+        int tmp; cin >> tmp;
+        a.push_back(tmp);
+    }
+
+    auto cal = [&](vector<ll> && vec) -> ll {
+        ranges::sort(vec);
+        return vec.back() - vec.front();
+    };
+
+    ll ans = LLONG_MAX;
+    for (int i=0 ; i<3 ; ++i) {
+        
+        vector<ll> dp(n + 1);
+        dp[2] = cal(vector<ll> {a[0], a[1]});
+        dp[3] = cal(vector<ll> {a[0], a[1], a[2]});
+
+        for (int j=4 ; j<=n ; ++j) {
+
+            dp[j] = dp[j - 2] + cal( vector<ll> {a[j - 1], a[j - 2]} );
+
+            if (j > 4) dp[j] = min(dp[j], dp[j - 3] + cal( vector<ll> {a[j - 1], a[j - 2], a[j - 3]} ) );
+
+            // cout << dp[j] << '\n';
+        }
+
+        ans = min(ans, dp[n]);
+
+        a.push_back(a.front());
+        a.pop_front();
+    }
+
+    cout << ans << '\n';
 } 
 
-signed main() {
+int main() {
     
     ios::sync_with_stdio(0);
     cin.tie(0);
@@ -28,7 +63,7 @@ signed main() {
 
     while (_--) {
         solve();
-        // cout << "-----------\n
+        // cout << "-----------\n";
     }
 
     return 0;
