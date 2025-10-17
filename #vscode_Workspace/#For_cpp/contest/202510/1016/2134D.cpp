@@ -30,9 +30,71 @@ void solve() {
         graph[v].push_back(u);
     }
 
-    
-} 
+    bool f = 1;
+    int s = 0;
+    for (int i=1 ; i<=n ; ++i) {
+        if (cnt[i] >= 3) f = 0;
 
+        if (cnt[i] == 1) s = i;
+    }
+
+    if (f) {
+        cout << "-1\n";
+        return;
+    }
+
+    vector<int> fa(n + 1);
+
+    auto bfs = [&]() -> int {
+        vector<int> dep(n + 1, -1);
+        queue<int> qu;
+
+        qu.push(s);
+        dep[s] = 1;
+
+        int endp = s;
+
+        while (!qu.empty()) {
+            int u = qu.front();
+            qu.pop();
+
+            endp = u;
+
+            for (auto& v : graph[u]) {
+                if (dep[v] == -1) {
+                    dep[v] = dep[u] + 1;
+                    qu.push(v);
+                    fa[v] = u;
+                }
+            }
+        }
+
+        return endp;
+    };
+
+    s = bfs();
+    s = bfs();
+
+    while (s != -1) {
+        int nxt = fa[s];
+
+        if (cnt[nxt] > 2) {
+            cout << s << ' ' << nxt << ' ';
+
+            for (auto& i : graph[nxt]) {
+                if (i != s && i != fa[nxt]) {
+                    cout << i << '\n';
+                    return;
+                }
+            }
+        }
+
+        s = nxt;
+    }
+
+    cout << "-1\n";
+} 
+ 
 int main() {
     
     ios::sync_with_stdio(0);
