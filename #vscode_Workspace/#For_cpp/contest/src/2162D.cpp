@@ -15,12 +15,44 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    int n; cin >> n;
+    ll n; cin >> n;
 
-    cout << "! 1 " << n << endl;
-    int tmp; cin >> tmp;
+    cout << "2 1 " << n << endl;
+    ll tmp; cin >> tmp;
 
-    int dif = tmp - n * (n + 1) / 2;
+    ll dif = tmp - n * (n + 1) / 2;
+
+
+
+    auto cal = [](int l, int r) -> ll {
+        ll sum1;
+        cout << "1 " << l << ' ' << r << endl;
+        cin >> sum1;
+        
+        ll sum2;
+        cout << "2 " << l << ' ' << r << endl;
+        cin >> sum2;
+
+        return sum2 - sum1;
+    };
+
+
+    int tl = 1, tr = n;
+
+    while (tl <= tr) {
+        int mid = (tl + tr) >> 1 ;
+
+        if (cal(tl, mid) > 0) 
+            tr = mid - 1;
+        else 
+            tl = mid + 1;
+    }
+
+    int l = tl;
+
+    int r = l + dif - 1;
+
+    cout << "! " << l << ' ' << r << endl;
 } 
 
 int main() {
