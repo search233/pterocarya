@@ -4,17 +4,10 @@ using namespace std;
 using ll = long long;
 
 void solve() {
-    ll n, k; 
-    cin >> n >> k;
+    ll n; 
+    cin >> n;
 
-    ll sum = 0;
-
-    for (int i=0 ; i<n ; ++i) {
-        ll tmp; cin >> tmp;
-        sum += tmp;
-    }
-
-    cout << sum - n * (n + 1) / 2 << '\n';
+    cout << n;
 }
 
 signed main() {
