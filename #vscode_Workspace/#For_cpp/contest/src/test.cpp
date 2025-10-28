@@ -4,10 +4,17 @@ using namespace std;
 using ll = long long;
 
 void solve() {
-    ll n; 
-    cin >> n;
+    ll n, m; 
+    cin >> n >> m;
+    vector<ll> a(n);
+    for (auto& i : a) cin   >> i;
 
-    cout << n;
+    ranges::sort(a);
+    reverse(a.begin(), a.end());
+
+    for (int i=1 ; i<=m ; ++i) {
+        cout << a[i - 1] << " \n"[i == m];
+    }
 }
 
 signed main() {
@@ -16,7 +23,7 @@ signed main() {
     cin.tie(0);
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();
