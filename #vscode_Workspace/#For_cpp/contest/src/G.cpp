@@ -43,69 +43,48 @@ void solve() {
         return t;
     };
 
-    int sz = n, s = 1;
+    int sz = n, s = 1, pos = -1;
     vector<int> mcs(n + 1), size(n + 1);
+
+    auto dfs = [&](auto& dfs, int u, int fa) -> void {
+
+            // cout << "u : " << u << '\n';
+
+        for (auto v : e[u]) {                
+
+            if (v == fa) continue;
+                // cout << "v : " << v << '\n';
+
+            dfs(dfs, v, u);
+
+            size[u] += size[v];
+
+            mcs[u] = max(mcs[u], size[v]);
+        }
+
+        mcs[u] = max(mcs[u], sz - size[u]);
+            
+        if (pos == -1 || mcs[u] < mcs[pos]) {
+            pos = u;
+        }
+    };
 
     auto fd = [&]() -> int {
 
-        int pos = -1;
+        pos = -1;
 
         for (int i=1 ; i<=n ; ++i) {
             mcs[i] = 0, size[i] = 1;
         }
-
-        auto dfs = [&](auto& dfs, int u, int fa) -> void {
-
-            // cout << "u : " << u << '\n';
-
-            for (auto v : e[u]) {
-                
-
-                if (v == fa) continue;
-                // cout << "v : " << v << '\n';
-
-                dfs(dfs, v, u);
-
-                size[u] += size[v];
-
-                mcs[u] = max(mcs[u], size[v]);
-            }
-
-            mcs[u] = max(mcs[u], sz - size[u]);
-            
-            if (pos == -1 || mcs[u] < mcs[pos]) {
-                pos = u;
-            }
-        };
 
         dfs(dfs, s, -1);
 
         return pos;
     };
 
-    auto print = [&]() -> void {
-
-        cout << "---------\n";
-      
-        for (int j=0 ; j<e[s].size() ; ++j) {
-            cout << size[e[s][j]] << ' ';
-        }
-        cout << '\n';
-
-
-        cout << "s: " << s << '\n';
-        cout << "sz: " << sz << '\n';
-        cout << "---------\n";
-    };
-
     while (1) {
 
-        s = fd();
         int p = fd();
-
- 
-// print();
-// cout << "p: " << p << '\n';
 
         sort(e[p].begin(), e[p].end(), [&](int a, int b) {
             return size[a] < size[b];
@@ -171,7 +150,7 @@ void solve() {
             }
         }
 
-        if (size[p] == 1) {
+        if (sz == 1) {
             cout << "! " << p << '\n';
             return ;
         }
