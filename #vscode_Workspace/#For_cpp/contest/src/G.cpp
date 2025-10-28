@@ -1,4 +1,4 @@
-//
+//https://qoj.ac/contest/1828/problem/9570
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -43,14 +43,26 @@ void solve() {
         return t;
     };
 
-    auto find = [&](int s, int sz) -> int {
+    int sz = n, s = 1;
+    vector<int> mcs(n + 1), size(n + 1);
+
+    auto fd = [&]() -> int {
 
         int pos = -1;
-        vector<int> mcs(n + 1), size(n + 1, 1);
+
+        for (int i=1 ; i<=n ; ++i) {
+            mcs[i] = 0, size[i] = 1;
+        }
 
         auto dfs = [&](auto& dfs, int u, int fa) -> void {
+
+            // cout << "u : " << u << '\n';
+
             for (auto v : e[u]) {
+                
+
                 if (v == fa) continue;
+                // cout << "v : " << v << '\n';
 
                 dfs(dfs, v, u);
 
@@ -71,10 +83,33 @@ void solve() {
         return pos;
     };
 
-    int sz = n;
+    auto print = [&]() -> void {
+
+        cout << "---------\n";
+      
+        for (int j=0 ; j<e[s].size() ; ++j) {
+            cout << size[e[s][j]] << ' ';
+        }
+        cout << '\n';
+
+
+        cout << "s: " << s << '\n';
+        cout << "sz: " << sz << '\n';
+        cout << "---------\n";
+    };
+
     while (1) {
 
-        int p = find(1, sz);
+        s = fd();
+        int p = fd();
+
+ 
+// print();
+// cout << "p: " << p << '\n';
+
+        sort(e[p].begin(), e[p].end(), [&](int a, int b) {
+            return size[a] < size[b];
+        });
 
         if (e[p].size() == 1) {
             if (query(p, e[p][0]) == 0) {
@@ -86,17 +121,59 @@ void solve() {
             return;
         }
         else if (e[p].size() == 2){
-            int res = query(e[p][1], e[p][0]);
-            if (res == 0) {
 
+            int res = query(e[p][0], e[p][1]);
+
+            if (res == 0) {
+                //p e[p][0]
+
+                s = e[p][0];
+                sz = size[e[p][0]];
+
+                e[e[p][0]].erase(find(e[e[p][0]].begin(), e[e[p][0]].end(), p));
             }
             else if (res == 1) {
                 cout << "! " << p << endl;
                 return;
             }
             else {
+                s = e[p][1];
+                sz -= size[p];
 
+                e[e[p][1]].erase(find(e[e[p][1]].begin(), e[e[p][1]].end(), p));
             }
+        }
+        else {
+
+            int res = query(e[p][0], e[p][1]);
+
+            if (res == 0) {
+                //p e[p][0]
+
+                s = e[p][0];
+                sz = size[e[p][0]];
+
+                e[e[p][0]].erase(find(e[e[p][0]].begin(), e[e[p][0]].end(), p));
+                e[p].erase(e[p].begin());
+            }
+            else if (res == 1) {
+                s = p;
+                sz -= size[e[p][0]];
+                sz -= size[e[p][1]];
+
+                e[p].erase(e[p].begin(), e[p].begin() + 2);
+            }
+            else {
+                s = e[p][1];
+                sz = size[e[p][1]];
+
+                e[e[p][1]].erase(find(e[e[p][1]].begin(), e[e[p][1]].end(), p));
+            }
+        }
+
+        if (size[p] == 1) {
+            cout << "! " << p << '\n';
+            return ;
         }
     }
 } 
