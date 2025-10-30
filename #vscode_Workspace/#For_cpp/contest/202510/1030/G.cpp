@@ -89,7 +89,7 @@ void solve() {
 
         vector<int> son;
         for (auto v : e[s]) {
-            if (vis[s]) continue;
+            if (vis[v]) continue;
 
             son.push_back(v);
         }
@@ -136,6 +136,7 @@ void solve() {
             if (res == 1) {
                 vis[son[0]] = 1;
                 vis[son[1]] = 1;
+                // cout << s << '\n';
             }
             else {
                 vis[s] = 1;
