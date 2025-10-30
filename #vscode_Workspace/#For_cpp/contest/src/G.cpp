@@ -43,124 +43,114 @@ void solve() {
         return t;
     };
 
-    int sz = n, s = 1, pos = -1;
-    vector<int> mcs(n + 1), size(n + 1);
+    int t = 0, s = 1, sz = n;
+    vector<int> size(n + 1), time(n + 1);
+    vector<int> mcs(n + 1), vis(n + 1);
+    
+    auto dfs =[&](auto& dfs, int u, int fa) -> void {
 
-    auto dfs = [&](auto& dfs, int u, int fa) -> void {
+        size[u] = 1;
+        mcs[u] = 0;
 
-            // cout << "u : " << u << '\n';
+        for (auto v : e[u]) {
 
-        for (auto v : e[u]) {                
-
-            if (v == fa) continue;
-                // cout << "v : " << v << '\n';
+            if (v == fa || vis[v]) continue;
 
             dfs(dfs, v, u);
-
             size[u] += size[v];
+        }
+    };
 
+    auto dfs1 = [&](auto& dfs1, int u, int fa) -> void {
+        time[u] = t;
+
+        for (auto v : e[u]) {
+            if (vis[v] || v == fa) continue;
+
+            dfs1(dfs1, v, u);
             mcs[u] = max(mcs[u], size[v]);
         }
 
         mcs[u] = max(mcs[u], sz - size[u]);
-            
-        if (pos == -1 || mcs[u] < mcs[pos]) {
-            pos = u;
-        }
-    };
-
-    auto fd = [&]() -> int {
-
-        pos = -1;
-
-        for (int i=1 ; i<=n ; ++i) {
-            mcs[i] = 0, size[i] = 1;
-        }
-
-        dfs(dfs, s, -1);
-
-        return pos;
     };
 
     while (1) {
+        ++t;
 
-        int p = fd();
+        dfs(dfs, s, -1);
+        sz = size[s];
 
-        sort(e[p].begin(), e[p].end(), [&](int a, int b) {
-            return size[a] < size[b];
+        dfs1(dfs1, s, -1);
+        for (int i=1 ; i<=n ; ++i) {
+            if (time[i] == t && mcs[s] > mcs[i]) {
+                s = i;
+            }
+        }
+
+        vector<int> son;
+        for (auto v : e[s]) {
+            if (vis[s]) continue;
+
+            son.push_back(v);
+        }
+
+        sort(son.begin(), son.end(), [&](int a, int b){
+            return size[a] > size[b];
         });
 
-        if (e[p].size() == 1) {
-            if (query(p, e[p][0]) == 0) {
-                cout << "! " << p << endl;
-            }
-            else {
-                cout << "! " << e[p][0] << endl;
-            }
+        int res;
+
+        if (son.size() == 0) {
+            cout << "! " << s << endl;
             return;
         }
-        else if (e[p].size() == 2){
-
-            int res = query(e[p][0], e[p][1]);
+        else if (son.size() == 1) {
+            res = query(son[0], s);
 
             if (res == 0) {
-                //p e[p][0]
-
-                s = e[p][0];
-                sz = size[e[p][0]];
-
-                e[e[p][0]].erase(find(e[e[p][0]].begin(), e[e[p][0]].end(), p));
-            }
-            else if (res == 1) {
-                cout << "! " << p << endl;
+                cout << "! " << son[0] << endl;
                 return;
             }
             else {
-                s = e[p][1];
-                sz -= size[p];
-
-                e[e[p][1]].erase(find(e[e[p][1]].begin(), e[e[p][1]].end(), p));
+                cout << "! " << s << endl;
+                return;
             }
         }
-        else {
+        else if (son.size() == 2) {
+            res = query(son[0], son[1]);
 
-            int res = query(e[p][0], e[p][1]);
-
-            if (res == 0) {
-                //p e[p][0]
-
-                s = e[p][0];
-                sz = size[e[p][0]];
-
-                e[e[p][0]].erase(find(e[e[p][0]].begin(), e[e[p][0]].end(), p));
-                e[p].erase(e[p].begin());
-            }
-            else if (res == 1) {
-                s = p;
-                sz -= size[e[p][0]];
-                sz -= size[e[p][1]];
-
-                e[p].erase(e[p].begin(), e[p].begin() + 2);
+            if (res == 1) {
+                cout << "! " << s << endl;
+                return;
             }
             else {
-                s = e[p][1];
-                sz = size[e[p][1]];
+                vis[s] = 1;
+                s = son[0];
 
-                e[e[p][1]].erase(find(e[e[p][1]].begin(), e[e[p][1]].end(), p));
+                if (res) s = son[1];
             }
         }
+        else if (son.size() == 3) {
+            res = query(son[0], son[1]);
 
-        if (sz == 1) {
-            cout << "! " << p << '\n';
-            return ;
+            if (res == 1) {
+                vis[son[0]] = 1;
+                vis[son[1]] = 1;
+            }
+            else {
+                vis[s] = 1;
+                s = son[0];
+                
+                if (res) s = son[1];
+            }
         }
     }
 } 
 
 int main() {
     
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+    // ios::sync_with_stdio(0);
+    // cin.tie(0);
 
     int _ = 1;
     cin >> _;
