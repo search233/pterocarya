@@ -6,6 +6,8 @@
         "deque": "cpp",
         "string": "cpp",
         "vector": "cpp",
-        "array": "cpp"
+        "array": "cpp",
+        "text_encoding": "cpp",
+        "thread": "cpp"
     }
 }

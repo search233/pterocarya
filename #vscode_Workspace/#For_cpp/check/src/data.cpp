@@ -22,28 +22,21 @@ int rand_int_closed(int min, int max)
     return dis(gen);
 }
 
-void solve(int& sumn) {
+void solve() {
+    int n = rand_int_closed(2, 9);
+    int q = rand_int_closed(1, n);
 
-    int n = rand_int_closed(1, sumn - 1);
-
-    sumn -= n;
-
-    vector<ll> p(n);
-    iota(p.begin(), p.end(), 1); // p = [1, 2, 3, ..., n]
-
-    random_device rd;  // 从硬件获取随机种子
-    mt19937 gen(rd()); // 梅森旋转随机数引擎（高质量随机性）
-
-    shuffle(p.begin(), p.end(), gen);
-
-    ll ans = rand_int_closed(0, 10000000);
-
-    cout << ans << '\n';
-
+    cout << n << ' ' << q << '\n';
     for (int i=0 ; i<n ; ++i) {
-        ll plus = rand_int_closed(0, ans);
-        p[i] += plus;
-        ans -= plus;
+        int x = rand_int_closed(5, 40);
+        int y = rand_int_closed(x, 70);
+        int z = rand_int_closed(y, 1000);
+
+        cout << x << ' ' << y << ' ' << z << '\n';
+    }
+
+    for (int i=0 ; i<q ; ++i) {
+        cout << i + 1 << ' ';
     }
 }
 
@@ -51,15 +44,15 @@ int main()
 {
     srand(time(0));
 
-    int t = rand_int_closed(1, 10000);
+    int t = 1;
 
     // int t = 50;
-    cout << t << '\n';
+    // cout << t << '\n';
 
-    int sumn = N;
+    // int sumn = N;
 
     while(t--) {
-        solve(sumn);
+        solve();
     }
 
 	return 0;

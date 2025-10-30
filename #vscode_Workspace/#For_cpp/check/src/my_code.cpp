@@ -1,100 +1,105 @@
-//https://codeforces.com/gym/105588/problem/L
-
 #include <bits/stdc++.h>
-#define pb push_back
 
 using namespace std;
 using ll = long long;
-using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
-const int N = (int)2e5 + 9;
-const int M = (int)1e5 + 9;
-const int mod =  998244353;
-const ll INF = LLONG_MAX;
-const double PI = acos(-1.0);
-
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
-
-    vector<int> b1(n);
-    vector<int> b2(m);
-
-    ll num1 = 0;
-    ll num2 = 0;
-
-    for (auto& i : b1) {
-        cin >> i;
-        if(i > 1) ++num1;
-    }
-
-    for (auto& i : b2) cin >> i;
-
-    ranges::sort(b1);
-    ranges::sort(b2);
-
-    int pos = 0;
-    if (b1[0] == 1) ++num1;
- 
-    auto push_pos = [&]() -> void { while (b1[pos] - 1 <= num2 && pos < n) ++num2, ++pos; };
-
-    for (int i=0 ; i<m ; ++i) {
-
-        push_pos();
-
-        if (b2[i] <= num1 + num2) {
-            if (b2[i] - num2 > 0) {
-                num1 = num1 - b2[i] + num2;
-            } 
-            ++num2;
-        }
-        else {
-            cout << "No\n";
-            return;
-        }
-    }
-
-    // push_pos();
-    // if (pos < n) 
-
-    cout << "Yes\n";
-} 
-
-int main() {
+    ll n, q;
+    cin >> n >> q;
     
-    ios::sync_with_stdio(0);
+    vector<vector<int>> a(n, vector<int>(4, 0));
+
+    int cnt = 0;
+    for (auto& i : a) {
+        cin >> i[1] >> i[2] >> i[3];
+        i[0] = cnt;
+        ++cnt;  
+    }
+
+    auto cmp1 = [&](vector<int> x, vector<int> y) -> bool {
+        return x[1] > y[1];
+    }; 
+
+    auto cmp2 = [&](vector<int> x, vector<int> y) -> bool {
+        return x[2] > y[2];
+    };
+
+    auto cmp3 = [&](vector<int> x, vector<int> y) -> bool {
+        return x[1]*y[3] > y[1]*x[3];
+    };
+
+    auto cmp4 = [&](vector<int> x, vector<int> y) -> bool {
+        return x[2]*y[3] > y[2]*x[3];
+    };
+
+
+    vector<vector<int>> rk(n + 1, vector<int> (2, n));
+
+    sort(a.begin(), a.end(), cmp1);
+    int trk = 1;
+    for (int i=0 ; i<n ; ++i) {
+        if (i && a[i - 1][1] > a[i][1]) {
+            trk = i + 1;
+        }
+        if (rk[a[i][0]][0] > trk) {
+            rk[a[i][0]][1] = 1;
+            rk[a[i][0]][0] = trk;
+        }
+    }
+
+    sort(a.begin(), a.end(), cmp2);
+    trk = 1;
+    for (int i=0 ; i<n ; ++i) {
+        if (i && a[i - 1][2] > a[i][2]) {
+            trk = i + 1;
+        }
+        if (rk[a[i][0]][0] > trk) {
+            rk[a[i][0]][1] = 2;
+            rk[a[i][0]][0] = trk;
+        }
+    }
+
+    sort(a.begin(), a.end(), cmp3);
+    trk = 1;
+    for (int i=0 ; i<n ; ++i) {
+        if (i && a[i - 1][1]*a[i][3] > a[i][1]*a[i - 1][3]) {
+            trk = i + 1;
+        }
+        if (rk[a[i][0]][0] > trk) {
+            rk[a[i][0]][1] = 3;
+            rk[a[i][0]][0] = trk;
+        }
+    }
+
+    sort(a.begin(), a.end(), cmp4);
+    trk = 1;
+    for (int i=0 ; i<n ; ++i) {
+        if (i && a[i - 1][2]*a[i][3] > a[i][2]*a[i - 1][3]) {
+            trk = i + 1;
+        }
+        if (rk[a[i][0]][0] > trk) {
+            rk[a[i][0]][1] = 4;
+            rk[a[i][0]][0] = trk;
+        }
+    }
+    for (int i=0 ; i<q ; ++i) {
+        int p; cin >> p;
+
+        cout << rk[p][0] << ':' << rk[p][1] << " \n"[i == q-1];
+    }
+}
+
+signed main() {
+
+    ios::sync_with_stdio(false);
     cin.tie(0);
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();
-        // cout << "-----------" << '\n';
     }
 
     return 0;
 }
-/*
-┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
-│Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│
-└───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
-│~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│
-├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
-│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
-├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
-│ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │              
-├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐    
-│ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
-├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐
-│Ctrl │Win │Alt │         Space         │Alt │ Fn │Menu│Ctrl│ │ ← │ ↓ │ → │
-└─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘
-
-
-  /\_/\
- (= ._.)
- / >  \>
-
-*/
