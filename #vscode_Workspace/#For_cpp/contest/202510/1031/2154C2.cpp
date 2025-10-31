@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2145/C2
+//https://codeforces.com/problemset/problem/2154/C2
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -32,24 +32,23 @@ void init(int n) {
 void solve() {
     int n; cin >> n;
 
-    vector<int> a(n + 1);
-    vector<ll> b(n + 1);
+    vector<vector<ll>> a(n + 1, vector<ll>(2));
 
     for (int i=0 ; i<n ; ++i) {
-        cin >> a[i + 1];
+        cin >> a[i + 1][0];
     }
 
     for (int i=0 ; i<n ; ++i) {
-        cin >> b[i + 1];
+        cin >> a[i + 1][1];
     }
 
     map<int, int> mp;
 
     for (int i=0 ; i<n ; ++i) {
         int pos = 0;
-        int num = a[i + 1];
+        int num = a[i + 1][0];
 
-        while (num > 1 && primes[pos] <= sqrt(a[i + 1])) {
+        while (num > 1 && primes[pos] <= sqrt(a[i + 1][0])) {
 
             if (num % primes[pos] == 0) {
                 ++mp[primes[pos]];
@@ -75,15 +74,14 @@ void solve() {
     ll ans = LLONG_MAX;
 
     for (int i=0 ; i<n ; ++i) {
-        int num = a[i + 1] + 1;
+        int num = a[i + 1][0] + 1;
         int pos = 0;
 
-        while (num > 1 && primes[pos] <= sqrt(a[i + 1] + 1)) {
+        while (num > 1 && primes[pos] <= sqrt(a[i + 1][0] + 1)) {
 
             if (num % primes[pos] == 0) {
                 if (mp.count(primes[pos])) {
-                    ans = min(ans, b[i + 1]);
-                    continue;
+                    ans = min(ans, a[i + 1][1]);
                 }
             }
             
@@ -95,15 +93,25 @@ void solve() {
         }
 
         if (mp.count(num)) {
-            ans = min(ans, b[i + 1]);
+            ans = min(ans, a[i + 1][1]);
             continue;
         }
     }
 
-    for (int i=0 ; i<n ; ++i) {
-        
+    sort(a.begin() + 1, a.end(), [&](vector<ll>& x, vector<ll>& y) -> bool {
+        return x[1] < y[1];
+    });
+
+    ans = min(ans, a[1][1] + a[2][1]);
+
+    for (auto [num, cnt] : mp) {
+        int tmp = num - a[1][0] % num;
+        if (tmp != num)
+            ans = min(ans, tmp * a[1][1]);
     }
-} 
+
+    cout << ans << '\n';
+}
 
 int main() {
     
@@ -117,7 +125,7 @@ int main() {
 
     while (_--) {
         solve();
-        // cout << "-----------\n
+        // cout << "-----------\n";s
     }
 
     return 0;
