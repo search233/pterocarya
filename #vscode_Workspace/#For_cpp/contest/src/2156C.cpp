@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2156/A
+//https://codeforces.com/problemset/problem/2156/C
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -15,13 +15,30 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    int n; cin >> n;
+    int n, k;
+    cin >> n >> k;
 
-    int ans = 0;
+    vector<int> mp(n + 1);
+    vector<int> a(n + 1);
+    for (int i=1 ; i<=n ; ++i) {
+        cin >> a[i];
+        ++mp[a[i]];
+    }
 
-    while (n > 2) {
-        ans += n / 3;
-        n -= n / 3 * 2;
+    vector<int> pre(n + 1);
+    for (int i=1 ; i<=n ; ++i) {
+        pre[i] += pre[i - 1] + mp[i];
+    }
+
+    int ans = 1;    
+    for (int i=1 ; i<=n ; ++i) {
+        int sum = n;
+        if (i * 4 - 1 <= n) sum -= (pre[n] - pre[i * 4 - 1]);
+        if (i * 3 <= n) sum -= mp[3 * i];
+        if (i * 2 <= n) sum -= mp[2 * i];
+        sum -= mp[i];
+
+        if (sum <= k) ans = i;
     }
 
     cout << ans << '\n';

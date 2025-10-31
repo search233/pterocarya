@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2156/A
+//https://codeforces.com/problemset/problem/2156/B
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -15,17 +15,54 @@ const double PI = acos(-1.0);
 
 
 void solve() {
-    int n; cin >> n;
+    int n, q; cin >> n >> q;
 
-    int ans = 0;
+    string s; cin >> s;
 
-    while (n > 2) {
-        ans += n / 3;
-        n -= n / 3 * 2;
+    ll a = 0, b = 1;
+
+    for (int i=0 ; i<n ; ++i) {
+        if (s[i] == 'A') {
+            a += b;
+        }
+        else {
+            b <<= 1ll;
+        }
     }
 
-    cout << ans << '\n';
-} 
+    
+
+    for (int i=0 ; i<q ; ++i) {
+        int ans = 0;
+        int num; cin >> num;
+
+        if (b == 1) {
+            cout << num << '\n';
+            continue;
+        }
+
+        while (num >= b + a) {
+            ans += n;
+
+            num -= a;
+            num /= b;
+        }
+
+        for (int j=0 ; num ; ++j) {
+            if (s[j] == 'A') {
+                --num;
+            }
+            else {
+                num /= 2;
+            }
+
+            ++ans;
+        }
+
+        cout << ans << '\n';
+    }
+  
+}
 
 int main() {
     
