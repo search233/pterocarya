@@ -4,7 +4,7 @@
         "name": "Linux",
   
         "includePath": [
-          "/usr/include/c++/15.2.1/**"
+          "/usr/include/c++/13/**"
         ],
   
         "defines": [],
