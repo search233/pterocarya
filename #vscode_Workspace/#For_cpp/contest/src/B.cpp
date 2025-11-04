@@ -19,8 +19,30 @@ void solve() {
 
     string s; cin >> s;
 
+    s = ' ' + s;
+    vector<int> pre(n + 1);
+    for (int i=1 ; i<=n ; ++i) {
+        pre[i] += pre[i - 1] + (s[i] == '?');
+    }
 
+    int memo[310][310][310][3]; // pos, a, b, pre
 
+    memset(memo, -1, sizeof(memo));
+
+    auto dfs = [&](auto& dfs, int pos, int a, int b, int pre) -> int {
+        if (pos > n) return memo[pos][a][b][pre] = 1;
+
+        if (~memo[pos][a][b][pre]) return memo[pos][a][b][pre];
+        
+        memo[pos][a][b][pre] = 0;
+
+        
+    };
+
+    for (int i=0 ; i<q ; ++i) {
+        int x, y, z;
+        cin >> x >> y >> z;
+    }
 } 
 
 int main() {
