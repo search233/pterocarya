@@ -8,9 +8,11 @@
                 "-std=c++23",
                 "-fdiagnostics-color=always",
                 "-g",
+                "-fsanitize=address,undefined",
                 "${file}",
                 "-o",
-                "${workspaceFolder}/compiled/${fileBasenameNoExtension}"
+                "${workspaceFolder}/compiled/${fileBasenameNoExtension}",
+                "2> ../io/Error.txt"
             ],
             "options": {
                 "cwd": "${fileDirname}"

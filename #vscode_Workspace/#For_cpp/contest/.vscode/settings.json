@@ -9,5 +9,7 @@
         "array": "cpp",
         "text_encoding": "cpp",
         "thread": "cpp"
-    }
+    },
+    "editor.fontFamily": "JetBrains Mono",
+    "terminal.integrated.fontLigatures.enabled": true,
 }
