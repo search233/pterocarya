@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2161/B
 
 #include <bits/stdc++.h>
 #define pb push_back
@@ -16,7 +14,44 @@ const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
 void solve() {
-    
+    int n; cin >> n;
+
+    vector<int> a, b;
+    vector<int> x, y;
+    for (int i=0 ; i<n ; ++i) {
+        string s; cin >> s;
+        
+        for (int j=0 ; j<n ; ++j) {
+            if (s[j] == '#') {
+                a.push_back(i + j);
+                b.push_back(i - j);
+                x.push_back(i);
+                y.push_back(j);
+                // cout << i << ' ' << j << '\n';
+            }
+        }
+    }
+
+    ranges::sort(a);
+    ranges::sort(b);
+    ranges::sort(x);
+    ranges::sort(y);
+
+    if (a.size() > 1 && a.back() - a.front() <= 1) {
+        cout << "YES\n";
+        return;
+    }
+    if (b.size() > 1 &&  b.back() - b.front() <= 1) {
+        cout << "YES\n";
+        return;
+    }
+
+    if ((x.empty() || x.back() - x.front() <= 1) && (y.empty() || y.back() - y.front() <= 1)) {
+        cout << "YES\n";
+        return;
+    }
+
+    cout << "NO\n";    
 } 
 
 int main() {

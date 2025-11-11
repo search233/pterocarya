@@ -8,7 +8,11 @@
         "vector": "cpp",
         "array": "cpp",
         "text_encoding": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "string_view": "cpp",
+        "span": "cpp"
     },
     "editor.fontFamily": "JetBrains Mono",
     "terminal.integrated.fontLigatures.enabled": true,
