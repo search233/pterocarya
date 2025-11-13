@@ -1,7 +1,6 @@
-//https://codeforces.com/problemset/problem/2161/C
+//https://codeforces.com/problemset/problem/2161/D
 
 #include <bits/stdc++.h>
-#define int long long 
 #define pb push_back
 
 using namespace std;
@@ -15,45 +14,10 @@ const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, x; cin >> n >> x;
-
-    vector<int> a(n);
-    for (auto& i : a) cin >> i;
-    ranges::sort(a);
-
-    int sum = 0, ans = 0;
-
-    int l = 0, r = n - 1;
-    vector<int> b;
     
-    while (r >=0 && a[r] >= x) {
-        b.push_back(a[r]);
-        sum = (sum + a[r] % x) % x;
-        ans += a[r];
-        --r;
-    }
-
-    while (l <= r) {
-        if (sum + a[r] < x) {
-            b.push_back(a[l]);
-            sum += a[l];
-            ++l;
-        }
-        else {
-            b.push_back(a[r]);
-            sum = (sum + a[r] % x) % x;
-            ans += a[r];
-            --r;
-        }
-    }
-
-    cout << ans << '\n';
-    for (int i=0 ; i<n ; ++i) {
-        cout << b[i] << " \n"[i == n-1];
-    }
 } 
 
-signed main() {
+int main() {
     
     ios::sync_with_stdio(0);
     cin.tie(0);
