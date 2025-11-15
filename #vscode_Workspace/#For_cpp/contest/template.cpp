@@ -1,9 +1,7 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://qoj.ac/contest/2562/problem/14690
 
 #include <bits/stdc++.h>
-#define pb push_back
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
 using ll = long long;
@@ -21,8 +19,7 @@ void solve() {
 
 int main() {
     
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+    __BUFF__
 
     int _ = 1;
     cin >> _;

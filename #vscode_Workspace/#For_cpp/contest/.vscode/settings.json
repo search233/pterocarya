@@ -12,7 +12,8 @@
         "forward_list": "cpp",
         "list": "cpp",
         "string_view": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "iosfwd": "cpp"
     },
     "editor.fontFamily": "JetBrains Mono",
     "terminal.integrated.fontLigatures.enabled": true,
