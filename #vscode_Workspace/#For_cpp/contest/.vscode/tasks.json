@@ -11,8 +11,7 @@
                 "-fsanitize=address,undefined",
                 "${file}",
                 "-o",
-                "${workspaceFolder}/compiled/${fileBasenameNoExtension}",
-                "2> ../io/Error.txt"
+                "${workspaceFolder}/compiled/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"

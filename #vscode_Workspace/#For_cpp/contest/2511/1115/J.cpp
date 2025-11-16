@@ -17,15 +17,73 @@ void solve() {
     int n, m;
     cin >> n >> m;
 
+    vector<int> c(n + 1);
+    for (int i=1 ; i<=n ; ++i) cin >> c[i];
+
     vector<vector<int>> e(n + 1);
-    for (int i=1 ; i<=n ; ++i) {
+    for (int i=1 ; i<n ; ++i) {
         int u, v;
         cin >> u >> v;
         e[u].push_back(v);
         e[v].push_back(u);
     }
+    e[1].push_back(-1);
 
+    vector<int> cnt;
+    vector<ll> sum(n + 1);
+    vector<arr2> dfn(n + 1);
 
+    auto dfs = [&](auto& dfs, int u, int fa) -> void {
+        dfn[u][0] = cnt.size();
+
+        if (e[u].size() == 1) return;
+
+        for (int i=0 ; i<e[u].size() ; ++i) {
+            if (e[u][i] == fa) {
+                swap(e[u][0], e[u][i]);
+            }
+            else {
+                cnt.push_back(e[u][i]);
+                dfs(dfs, e[u][i], u);
+                dfn[u][1] = cnt.size();
+            }
+        }
+
+        sort(e[u].begin() + 1, e[u].end(), [&](int a, int b) -> bool {
+            return c[a] < c[b];
+        });
+
+        c[u] = min(c[u], c[e[u][1]] + c[e[u][2]]);
+    };
+    dfs(dfs, 1, -1);
+
+    auto cal = [&](auto& cal, int u) -> void {
+        int f = e[u][0];
+
+        if (~f) {
+            int add = (e[f][1] == u) ? c[e[f][2]] : c[e[f][1]];
+
+            sum[u] = sum[f] + add;
+        }
+
+        if (e[u].size() == 1) return;
+
+        for (int i=1 ; i<e[u].size() ; ++i) {
+            cal(cal, e[u][i]);
+        }
+    };
+    cal(cal, 1);
+
+    for (int i=0 ; i<m ; ++i) {
+        int x, y; cin >> x >> y;
+
+        if (dfn[x][0] > dfn[y][0] && dfn[x][0] <= dfn[y][1]) {
+            cout << sum[x] - sum[y] << '\n';
+        }  
+        else {
+            cout << "-1\n";
+        }
+    }
 } 
 
 int main() {
