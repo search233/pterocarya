@@ -1,4 +1,6 @@
-//https://qoj.ac/contest/2562/problem/14690
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
