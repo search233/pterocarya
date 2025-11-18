@@ -15,13 +15,14 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n, m; cin >> n >> m;
-    vector<int> a(n);
-    for (auto& i : a) cin >> i;
+    set<int> a;
+    for (int i=0 ; i<n ; ++i) {
+        int tmp; cin >> tmp;
+        a.insert(tmp);
+    }
 
-    ranges::sort(a);
-
-    vector<int> b;
-    vector<int> b2;
+    vector<int> b(m);
+    set<int> b2;
     vector<arr2> b1;
     for (int i=0 ; i<m ; ++i) {
         cin >> b[i];
@@ -30,28 +31,44 @@ void solve() {
     for (int i=0 ; i<m ; ++i) {
         int c; cin >> c;
         if (c) b1.push_back({b[i], c});
-        else   b2.push_back(b[i]);
+        else   b2.insert(b[i]);
     }
 
-    sort(b1.begin(), b1.end(), [](arr2 x, arr2 y) -> bool {
-        return x[0] < y[0];
-    });
+    sort(b1.begin(), b1.end());
 
     int ans = 0;
+    if (a.empty()) {
+        cout << ans << '\n';
+        return;
+    }
 
     for (int i=0 ; i<b1.size() ; ++i) {
-        if (a.empty()) {
-            cout << ans << '\n';
-            return;
+        int x = b1[i][0];
+        
+        auto it = lower_bound(a.begin(), a.end(), x);
+        if (it == a.end()) {
+            break;
         }
-
-        if (b1[i][0] <= a.back()) {
+        else {
             ++ans;
-            a.back() = max(a.back(), b1[i][1]);
+            cout << *it << ' ';
+            if (*it < b1[])
+            cout << *it << '\n';
         }
     }
 
-    
+    for (int i=0 ; i<a.size() ; ++i) {
+        int x = a[i];
+        auto it = upper_bound(b2.begin(), b2.end(), x);
+
+        if (it == b2.begin()) continue;
+        
+        --it;
+        ++ans;
+        b2.erase(it);
+    }
+
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -63,7 +80,7 @@ int main() {
 
     while (_--) {
         solve();
-        // cout << "-----------\n";
+        cout << "-----------\n";
     }
 
     return 0;
