@@ -1,103 +1,69 @@
 #include <bits/stdc++.h>
+#define endl '\n'
+#define yes cout << "Yes" << endl
+#define no cout << "No" << endl
+#define int long long
+#define pii pair<int,int>
+#define vii vector<vector<int>>
 using namespace std;
+const int INF = 1e18;
+const int maxn = 1e9;
 
-struct Country {
-    int gid;          // 原始输入序号
-    int gold, medal;  // 金牌、奖牌
-    double pop;       // 人口（百万）
-    int rk[5];        // rk[1] 金牌榜, rk[2] 奖牌榜, rk[3] 人均金牌, rk[4] 人均奖牌
-};
+void solve(){
+    int n,m;cin >> n >> m;
+    vector<int> a(n),b(m),c(m);
+    for(int &x : a) cin >> x;
+    for(int &x : b) cin >> x;
+    for(int &x : c) cin >> x;
+    vector<pii> B;
 
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    priority_queue<int,vector<int>,greater<>> pq,less;
+    vector<int> b2;
+    for(int x : a) pq.push(x);
+    for(int i = 0; i < m; i++){
+        if(c[i] == 0) b2.push_back(b[i]);
+        else B.push_back({b[i],c[i]});
+    }
+    sort(B.begin(),B.end(),[](pii a, pii b){
+        if(a.first == b.first) return a.second > b.second;
+        return a.first < b.first;
+    });
 
-    int N, M;
-    if (!(cin >> N >> M)) return 0;
-    vector<Country> a(N);
-    for (int i = 0; i < N; i++) {
-        cin >> a[i].gold >> a[i].medal >> a[i].pop;
-        a[i].gid = i;
+    int p = 0;
+    while(!pq.empty() && p < B.size()){
+        int cur = pq.top();
+        pq.pop();
+        if(cur >= B[p].first){
+            int add = max(cur,B[p].second);
+            pq.push(add);
+            p++;
+        }
+        else less.push(cur);
+    }
+    int ans = p;
+    while(!pq.empty()){
+        less.push(pq.top());
+        pq.pop();
     }
 
-    // 先定义 equal_keys，供 buildRank 内部使用
-    auto equal_keys = [&](int mode, int x, int y) -> bool {
-        switch (mode) {
-        case 1: return a[x].gold == a[y].gold;
-        case 2: return a[x].medal == a[y].medal;
-        case 3: {
-            double vx = (a[x].pop == 0 ? -1 : 1.0 * a[x].gold / a[x].pop);
-            double vy = (a[y].pop == 0 ? -1 : 1.0 * a[y].gold / a[y].pop);
-            return vx == vy;
+    p = 0;
+    sort(b2.begin() ,b2.end());
+    while(!less.empty() && p < b2.size()){
+        int cur = less.top();
+        less.pop();
+        if(cur >= b2[p]){
+            ans++;
+            p++;
         }
-        case 4: {
-            double vx = (a[x].pop == 0 ? -1 : 1.0 * a[x].medal / a[x].pop);
-            double vy = (a[y].pop == 0 ? -1 : 1.0 * a[y].medal / a[y].pop);
-            return vx == vy;
-        }
-        }
-        return false;
-    };
-
-    auto buildRank = [&](int mode) {
-        vector<int> ord(N);
-        iota(ord.begin(), ord.end(), 0);
-        switch (mode) {
-        case 1: // 金牌榜
-            sort(ord.begin(), ord.end(), [&](int x, int y) {
-                return a[x].gold > a[y].gold;
-            });
-            break;
-        case 2: // 奖牌榜
-            sort(ord.begin(), ord.end(), [&](int x, int y) {
-                return a[x].medal > a[y].medal;
-            });
-            break;
-        case 3: // 人均金牌
-            sort(ord.begin(), ord.end(), [&](int x, int y) {
-                double vx = (a[x].pop == 0 ? -1 : 1.0 * a[x].gold / a[x].pop);
-                double vy = (a[y].pop == 0 ? -1 : 1.0 * a[y].gold / a[y].pop);
-                return vx > vy;
-            });
-            break;
-        case 4: // 人均奖牌
-            sort(ord.begin(), ord.end(), [&](int x, int y) {
-                double vx = (a[x].pop == 0 ? -1 : 1.0 * a[x].medal / a[x].pop);
-                double vy = (a[y].pop == 0 ? -1 : 1.0 * a[y].medal / a[y].pop);
-                return vx > vy;
-            });
-            break;
-        }
-        // 填名次（并列同分同名次）
-        for (int i = 0, r = 1; i < N; ) {
-            int j = i;
-            while (j < N && equal_keys(mode, ord[i], ord[j])) ++j;
-            for (int k = i; k < j; k++) a[ord[k]].rk[mode] = r;
-            r += (j - i);
-            i = j;
-        }
-    };
-
-    for (int m = 1; m <= 4; ++m) buildRank(m);
-
-    // 处理咨询
-    vector<int> q(M);
-    for (int i = 0; i < M; i++) cin >> q[i];
-
-    for (int i = 0; i < M; i++) {
-        int id = q[i];
-        int bestMode = 1, bestRk = a[id].rk[1];
-        for (int m = 2; m <= 4; m++) {
-            if (a[id].rk[m] < bestRk) {
-                bestRk = a[id].rk[m];
-                bestMode = m;
-            } else if (a[id].rk[m] == bestRk && m < bestMode) {
-                bestMode = m;
-            }
-        }
-        if (i) cout << ' ';
-        cout << bestRk << ':' << bestMode;
     }
-    cout << '\n';
+    cout << ans << endl;
+}
+signed main(){
+    ios::sync_with_stdio(0);cin.tie(0);
+    int t;
+    cin >> t;
+    while(t--){
+        solve();
+    }
     return 0;
 }

@@ -14,15 +14,19 @@ const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, m; cin >> n >> m;
-    set<int> a;
+
+    int n, m;
+    scanf("%d %d", &n, &m);
+
+    multiset<int> a;
     for (int i=0 ; i<n ; ++i) {
-        int tmp; cin >> tmp;
+        int tmp; 
+        scanf("%d", &tmp);
         a.insert(tmp);
     }
 
     vector<int> b(m);
-    set<int> b2;
+    multiset<int> b2;
     vector<arr2> b1;
     for (int i=0 ; i<m ; ++i) {
         cin >> b[i];
@@ -46,20 +50,22 @@ void solve() {
         int x = b1[i][0];
         
         auto it = lower_bound(a.begin(), a.end(), x);
+        
         if (it == a.end()) {
             break;
         }
         else {
             ++ans;
-            cout << *it << ' ';
-            if (*it < b1[])
-            cout << *it << '\n';
+
+            if (*it < b1[i][1]) {
+                a.erase(it);
+                a.insert(b1[i][1]);
+            }
         }
     }
 
-    for (int i=0 ; i<a.size() ; ++i) {
-        int x = a[i];
-        auto it = upper_bound(b2.begin(), b2.end(), x);
+    for (auto& i : a) {
+        auto it = upper_bound(b2.begin(), b2.end(), i);
 
         if (it == b2.begin()) continue;
         
@@ -68,19 +74,19 @@ void solve() {
         b2.erase(it);
     }
 
-    cout << ans << '\n';
+    cout << ans << '\n';    
 } 
 
 int main() {
     
-    __BUFF__
+    // __BUFF__
 
     int _ = 1;
     cin >> _;
 
     while (_--) {
         solve();
-        cout << "-----------\n";
+        // cout << "\n-----------\n";
     }
 
     return 0;

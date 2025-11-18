@@ -1,35 +1,120 @@
+//https://codeforces.com/problemset/problem/2164/C
+
 #include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
 using namespace std;
- 
-int n, m;
- 
-int main() {
-    cin >> n >> m;
-    basic_string<int> a(n, 0);
-    for (int& x : a) cin >> x;
-    for (int op, l1, l2, l, r; m--;) {
-        cin >> op;
-        if (op == 1) {
-            cin >> l1;
-            basic_string<int> s1(l1, 0);
-            for (int& x : s1) cin >> x;
-            cin >> l2;
-            basic_string<int> s2(l2, 0);
-            for (int& x : s2) cin >> x;
-            int p = a.find(s1);
-            if (p != a.npos) a.replace(p, l1, s2);
+using ll = long long;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const int N = (int)2e5 + 9;
+const int M = (int)1e5 + 9;
+const int mod =  998244353;
+const ll INF = LLONG_MAX;
+const double PI = acos(-1.0);
+
+void solve() {
+
+    int n, m; cin >> n >> m;
+
+    multiset<int> a;
+    for (int i=0 ; i<n ; ++i) {
+        int tmp; cin >> tmp;
+        a.insert(tmp);
+    }
+
+    // for (auto x : a) {
+    //     cout << x << ' ';
+    // }
+    // return;
+
+    vector<int> b(m);
+    multiset<int> b2;
+    vector<arr2> b1;
+    for (int i=0 ; i<m ; ++i) {
+        cin >> b[i];
+    }
+
+    for (int i=0 ; i<m ; ++i) {
+        int c; cin >> c;
+        if (c) b1.push_back({b[i], c});
+        else   b2.insert(b[i]);
+    }
+
+    sort(b1.begin(), b1.end());
+
+    int ans = 0;
+    if (a.empty()) {
+        cout << ans << '\n';
+        return;
+    }
+
+    for (int i=0 ; i<b1.size() ; ++i) {
+        int x = b1[i][0];
+        
+        auto it = lower_bound(a.begin(), a.end(), x);
+        
+        if (it == a.end()) {
+            break;
         }
-        if (op == 2)
-            for (int i = a.size() - 2; i >= 0; i--)
-                if ((a[i] + a[i + 1]) % 2 == 0)
-                    a.insert(i + 1, {(a[i] + a[i + 1]) / 2});
-        if (op == 3) {
-            cin >> l >> r;
-            for (int i = l - 1, j = r - 1; i < j; i++, j--)
-                swap(a[i], a[j]);
+        else {
+            ++ans;
+
+            if (*it < b1[i][1]) {
+                a.erase(it);
+                a.insert(b1[i][1]);
+            }
         }
     }
-    for (int i = 0; int x : a)
-        cout << x << " \n"[++i == a.size()];
+
+    // cout << "ans = " << ans << '\n';
+    for (auto& i : a) {
+        auto it = upper_bound(b2.begin(), b2.end(), i);
+
+        // cout << i << ' ' << *it << '\n';
+        if (it == b2.begin()) continue;
+        
+        --it;
+        ++ans;
+        b2.erase(it);
+    }
+
+    cout << ans << '\n';    
+} 
+
+int main() {
+    
+    // __BUFF__
+
+    int _ = 1;
+    cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "\n-----------\n";
+    }
+
     return 0;
 }
+/*
+┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
+│Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│
+└───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
+│~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
+│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
+│ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │              
+├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐    
+│ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
+├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐
+│Ctrl │Win │Alt │         Space         │Alt │ Fn │Menu│Ctrl│ │ ← │ ↓ │ → │
+└─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘
+
+
+  /\_/\
+ (= ._.)
+ / >  \>
+
+*/
