@@ -16,18 +16,18 @@ const double PI = acos(-1.0);
 void solve() {
 
     int n, m;
-    scanf("%d %d", &n, &m);
+    cin >> n >> m;
 
-    multiset<int> a;
+    map<int, int> a;
     for (int i=0 ; i<n ; ++i) {
-        int tmp; 
-        scanf("%d", &tmp);
-        a.insert(tmp);
+        int tmp; cin >> tmp;
+        ++a[tmp];
     }
 
     vector<int> b(m);
-    multiset<int> b2;
+    map<int, int> b2;
     vector<arr2> b1;
+
     for (int i=0 ; i<m ; ++i) {
         cin >> b[i];
     }
@@ -35,7 +35,7 @@ void solve() {
     for (int i=0 ; i<m ; ++i) {
         int c; cin >> c;
         if (c) b1.push_back({b[i], c});
-        else   b2.insert(b[i]);
+        else   ++b2[b[i]];
     }
 
     sort(b1.begin(), b1.end());
@@ -46,40 +46,46 @@ void solve() {
         return;
     }
 
-    for (int i=0 ; i<b1.size() ; ++i) {
-        int x = b1[i][0];
-        
-        auto it = lower_bound(a.begin(), a.end(), x);
+    for (int i=0 ; i<b1.size() ; ++i) {        
+        auto it = a.lower_bound(b1[i][0]);
         
         if (it == a.end()) {
             break;
         }
         else {
+            auto& [num, times] = *it;
             ++ans;
 
-            if (*it < b1[i][1]) {
-                a.erase(it);
-                a.insert(b1[i][1]);
+            if (num < b1[i][1]) {
+                --times;
+               if (times == 0) a.erase(num);
+
+               ++a[b1[i][1]];
             }
         }
     }
 
-    for (auto& i : a) {
-        auto it = upper_bound(b2.begin(), b2.end(), i);
+    for (auto& [anum, atimes] : a) {
+        for (int i=0 ; i<atimes ; ++i) {
+            auto it = b2.upper_bound(anum);
 
-        if (it == b2.begin()) continue;
+            if (it == b2.begin()) break;
         
-        --it;
-        ++ans;
-        b2.erase(it);
+            --it;
+            auto& [num, times] = *it;
+
+            ++ans;
+            --times;
+            if (times == 0) b2.erase(num);
+        }
     }
 
-    cout << ans << '\n';    
+    cout << ans << '\n';
 } 
 
 int main() {
     
-    // __BUFF__
+    __BUFF__
 
     int _ = 1;
     cin >> _;
