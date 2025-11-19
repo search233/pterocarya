@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2164/D
+//https://codeforces.com/problemset/problem/2163/A
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -14,57 +14,7 @@ const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, kmx;
-    cin >> n >> kmx;
-
-    string s, t;
-    cin >> s >> t;
-
-    int ps = n - 1; 
-    int pt = n - 1;
-    vector<int> mv(n);
-
-    int k = 0;
-
-    while (ps >=0 && pt >= 0) {
-        // cout << ps << ' ' << pt << '\n';
-        if (ps > pt) ps = pt;
-        while (ps >= 0 && s[ps] != t[pt]) --ps;
-
-        if (ps < 0) {
-            cout << "-1\n";
-            return;
-        }
-
-        while (ps <= pt && s[ps] == t[pt]) {
-            mv[ps] = max(mv[ps], pt - ps);
-            k = max(k, pt - ps);
-            --pt;
-        }
-        
-    }
-
-    if (k <= kmx) {
-        cout << k << '\n';
-    }
-    else {
-        cout << "-1\n";
-        return;
-    }
-
-    for (int i=0 ; i<k ; ++i) {
-        for (int i=n-1 ; i>=0 ; --i) {
-            if (mv[i]) {
-                s[i + 1] = s[i];
-                mv[i + 1] = mv[i] - 1;
-                mv[i] = 0;
-            }
-        }
-
-        cout << s << '\n';
-    }
-
-
+    
 } 
 
 int main() {
