@@ -14,7 +14,22 @@ const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
 void solve() {
-    
+    int n; cin >> n;
+    vector<int> a(n);
+
+    for (auto& i : a) cin >> i;
+
+    ranges::sort(a);
+
+    for (int i=0 ; i<n ; ++i) {
+        if ((i & 1) && (i < n - 1 && a[i] != a[i + 1])) {
+            cout << "NO\n";
+            return;
+        } 
+    }
+
+    cout << "YES\n";
+
 } 
 
 int main() {
