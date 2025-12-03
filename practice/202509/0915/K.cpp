@@ -1,0 +1,132 @@
+//https://codeforces.com/gym/105949/problem/K
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+using ll = long long;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const int N = (int)2e5 + 9;
+const int M = (int)1e5 + 9;
+const int mod =  998244353;
+const ll INF = LLONG_MAX;
+const double PI = acos(-1.0);
+
+
+struct DSU{
+	int n;
+	vector<int>fa, sz;
+
+	DSU(int n){
+		init(n);
+	}
+
+	void init(int n){
+		this -> n = n;
+		fa.assign(n + 5, 0);
+		sz.assign(n + 5, 1);
+		for(int i = 0; i <= n; i++)fa[i] = i;
+	}
+
+	int find(int k){
+		return k == fa[k] ? k : fa[k] = find(fa[k]);
+	}
+
+	bool same(int u, int v){
+		return find(u) == find(v);
+	}
+
+	void un(int u, int v){
+		u = find(u); v = find(v);
+		if(u == v)return ;
+		sz[u] += sz[v];
+		fa[v] = u;
+	}
+
+
+	int size(int x){
+		return sz[find(x)];
+	}
+
+};
+
+void solve() {
+    int n; cin >> n;
+
+    vector<int> p(n + 1);
+    vector<vector<int>> e(n + 2);
+
+    for (int i=1 ; i<=n ; ++i) {
+        cin >> p[i];
+    }
+    
+    for (int i=1 ; i<n ; ++i) {
+        int u, v;
+        cin >> u >> v;
+
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+
+    DSU dsu(n);
+    vector<int> ans(n + 1, 0);
+    vector<bool> vis(n + 1, 0);
+
+    for (int i=n ; i>0 ; --i) {
+        int u = p[i];
+        vis[u] = 1;
+
+        for (auto v : e[u]) {
+            if (vis[v]) {
+                int fa = dsu.find(v);
+
+                ans[fa] = u;
+
+                dsu.un(u, fa);
+            }
+        }
+    }
+
+    for (int i=1 ; i<=n ; ++i) {
+        cout << ans[i] << " \n"[i == n];
+    }
+} 
+
+int main() {
+    
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+
+    int _ = 1;
+    cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------" << '\n';
+    }
+
+    return 0;
+}
+/*
+┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
+│Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│
+└───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
+│~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
+│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
+│ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │              
+├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐    
+│ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
+├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐
+│Ctrl │Win │Alt │         Space         │Alt │ Fn │Menu│Ctrl│ │ ← │ ↓ │ → │
+└─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘
+
+
+  /\_/\
+ (= ._.)
+ / >  \>
+
+*/
