@@ -1,7 +1,7 @@
-//https://www.luogu.com.cn/problem/P3388
+//https://codeforces.com/problemset/problem/2169/A
 
 #include <bits/stdc++.h>
-#define pb push_back
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
 using ll = long long;
@@ -13,42 +13,36 @@ const int mod =  998244353;
 const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
-
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int n; cin >> n;
+    int a; cin >> a;
+    map<int, int> mp;
 
-    vector<vector<int>> e(n + 2);
-
-    for (int i=0 ; i<m ; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].pb(v);
-        e[v].pb(u);
+    int cnt = 0;
+    for (int i = 0; i < n; ++i) {
+        int num; cin >> num;
+        ++mp[num];
+        if (num < a) ++cnt;
     }
 
-    vector<bool> vis(n + 1, 0);
-    vector<int> dfn(n + 1, 0);
-    vector<int> low(n + 1, 0);
-
-    auto dfs = []() -> void {
-
-    };
-    
+    if (2 * cnt >= n - mp[a]) {
+        cout << a - 1 << '\n';
+    }
+    else {
+        cout << a + 1 << '\n';
+    }
 } 
 
 int main() {
     
-    ios::sync_with_stdio(0);
-    cin.tie(0);
+    __BUFF__
 
     int _ = 1;
     cin >> _;
 
     while (_--) {
         solve();
-        // cout << "-----------" << '\n';
+        // cout << "-----------\n";
     }
 
     return 0;
