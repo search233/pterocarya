@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2166/A
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -17,24 +15,17 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<int> vec(n + 1);
+    string s; cin >> s;
 
-    for (int i=1 ; i<=n ; ++i) {
-        cin >> vec[i];
-        vec[i] = max(vec[i], i * 2);
+    int cnt = 0;
+    for (auto& c : s) {
+        if (c == s.back()) {
+            ++cnt;
+        }
     }
 
-    vector<ll> subsum(n + 2);
-    for (int i = n; i >= 1; --i) {
-        subsum[i] = subsum[i + 1] + vec[i];
-    }
-
-    ll ans = 0, sum = 0;
-    for (int i = n; i >= 0; --i) {
-        sum += 
-        ans = max({ans, });
-    }
-}
+    cout << n - cnt << '\n';
+} 
 
 int main() {
     
