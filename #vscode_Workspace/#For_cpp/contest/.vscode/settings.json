@@ -19,5 +19,6 @@
         "ranges": "cpp"
     },
     "editor.fontFamily": "JetBrains Mono",
+    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font Mono",
     "terminal.integrated.fontLigatures.enabled": true,
 }
