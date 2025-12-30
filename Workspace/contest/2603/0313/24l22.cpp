@@ -1,0 +1,82 @@
+//2024 l2 2
+
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+void solve() {
+    int n; cin >> n;
+    cin.ignore();
+
+    auto f = [&](const string& s) -> string {
+        string res;
+        string ss = ' ' + s;
+        for (int i = 0; i < ss.length(); ++i) {
+            if (ss[i] == ' ' && i + 1 < ss.length() && ss[i + 1] != ' ') {
+                res.push_back(ss[i + 1]);
+            }
+        }
+        return res;
+    };
+
+    unordered_map<string, vector<string>> mp;
+    for (int i = 0; i < n; ++i) {
+        string s;
+        getline(cin, s);
+        // cout << f(s) << '\n';
+        mp[f(s)].push_back(s);
+    }
+
+    int m; cin >> m;
+    cin.ignore();
+    
+    for (int i = 0; i < m; ++i) {
+        string s;
+        getline(cin, s);
+        if (!mp.count(f(s))) {
+            cout << s;
+            cout << '\n';
+            continue;
+        }
+        vector<string> vec = mp[f(s)];
+        ranges::sort(vec);
+        cout << vec[0];
+        for (int j = 1; j < vec.size(); ++j) {
+            cout << '|' << vec[j];
+        }
+        cout << '\n';
+    }
+} 
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
+*/

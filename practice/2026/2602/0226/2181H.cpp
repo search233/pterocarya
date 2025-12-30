@@ -1,0 +1,125 @@
+//https://codeforces.com/problemset/problem/2181/H
+
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+using i128 = __int128_t;
+
+// 向上取整的除法：ceil(a / b)，b > 0
+i128 div_ceil(i128 a, i128 b) {
+    if (b < 0) a = -a, b = -b;
+    if (a >= 0) return (a + b - 1) / b;
+    else return a / b; // 负数时 C++ 向 0 截断，本身就是 ceil
+}
+
+// 向下取整的除法：floor(a / b)，b > 0
+i128 div_floor(i128 a, i128 b) {
+    if (b < 0) a = -a, b = -b;
+    if (a >= 0) return a / b;
+    else return (a - (b - 1)) / b;
+}
+
+// 输出重载
+ostream& operator<<(ostream& os, i128 x) {
+    if (x == 0) {
+        os << '0';
+        return os;
+    }
+    if (x < 0) {
+        os << '-';
+        x = -x;
+    }
+    string s;
+    while (x > 0) {
+        int digit = (int)(x % 10);
+        s.push_back('0' + digit);
+        x /= 10;
+    }
+    reverse(s.begin(), s.end());
+    os << s;
+    return os;
+}
+
+// 输入重载
+istream& operator>>(istream& is, i128& x) {
+    string s;
+    is >> s;
+    x = 0;
+    bool neg = false;
+    int i = 0;
+    if (s[0] == '-') {
+        neg = true;
+        i = 1;
+    }
+    for (; i < (int)s.size(); ++i) {
+        x = x * 10 + (s[i] - '0');
+    }
+    if (neg) x = -x;
+    return is;
+}
+
+void solve() {
+    ll w, h, d, n;
+    cin >> w >> h >> d >> n;
+
+    i128 fac = 1;
+    fac *= w;
+    fac *= h;
+    fac *= d;
+
+
+    if (fac % n) {
+        cout << "-1\n";
+    }
+    else {
+        n = fac / n;
+        ll w1, h1, d1;
+        w1 = gcd(w, n);
+        n /= w1;
+        h1 = gcd(h, n);
+        n /= h1;
+        d1 = gcd(d, n);
+        
+        w1 = w / w1 - 1;
+        h1 = h / h1 - 1;
+        d1 = d / d1 - 1;
+
+        cout << w1 << ' '
+             << h1 << ' '
+             << d1;
+    }
+} 
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
+*/

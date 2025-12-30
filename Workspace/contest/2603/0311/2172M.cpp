@@ -1,0 +1,80 @@
+//https://codeforces.com/problemset/problem/2172/M
+
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+void solve() {
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    vector a(n + 1, int());
+    vector e(n + 1, vector<int>());
+
+    for (int i = 1; i <= n ;++i) {
+        cin >> a[i];
+    }
+
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+
+    queue<arr2> qu; // u, d
+    qu.push({1, 0});
+
+    vector<int> ans(k + 1);
+    vector<bool> vis(n + 1);
+    vis[1] = 1;
+
+    while (!qu.empty()) {
+        auto [u, d] = qu.front();
+        qu.pop();
+
+        for (auto v : e[u]) {
+            if (vis[v]) continue;
+            vis[v] = 1;
+            ans[a[v]] = max(ans[a[v]], d + 1);
+            qu.push({v, d + 1});
+        }
+    }
+
+    for (int i = 1; i <= k; ++i) {
+        cout << ans[i] << " \n"[i == n];
+    }
+} 
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
+*/

@@ -1,0 +1,91 @@
+//https://codeforces.com/problemset/problem/2172/B
+
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr4 = array<int, 4>;
+const double PI = acos(-1.0);
+
+void solve() {
+    int n, m, l, x, y;
+    cin >> n >> m >> l >> x >> y;
+
+    vector<arr4> a;
+    for (int i = 0; i < n; ++i) {
+        int s, t; cin >> s >> t;
+        a.push_back({s, t, s, 0});
+        a.push_back({s, t, t, 2});
+    }
+
+    vector<double> ans(m + 1); 
+    for (int i = 1; i <= m; ++i) {
+        int p; cin >> p;
+        ans[i] = (1.0 * l - p) / y;
+        a.push_back({i, 0, p, 1});
+    }   
+    ranges::sort(a, []
+        (arr4 x, arr4 y) {
+            if (x[2] != y[2]) {
+                return x[2] < y[2];
+            }
+            return x[3] < y[3];
+        });   
+
+    auto cmp = [&](arr2 a, arr2 b) {
+        double aa = (1.0 * l - a[1]) / y + (1.0 * a[1] - a[0]) / x;
+        double bb = (1.0 * l - b[1]) / y + (1.0 * b[1] - b[0]) / x;
+        return aa < bb;
+    };
+    multiset<arr2, decltype(cmp)> st(cmp);
+
+    for (auto[s, t, pos, tag] : a) {
+        // cout << s << ' ' << t << ' ' << pos << '\n';
+        if (tag == 1 && !st.empty()) {
+            auto [a, b] = *st.begin();
+            double num = (1.0 * l - b) / y + (1.0 * b - a) / x;
+            ans[s] = min(ans[s], num);
+        }
+        else if (pos == s) {
+            st.insert({s, t});
+        } 
+        else if (pos == t && t){
+            st.erase(st.find({s, t}));
+        }
+    }
+
+    for (int i = 1; i <= m; ++i) {
+        cout << fixed << setprecision(10) << ans[i] << '\n';
+        // printf("%.9f\n", ans[i]);
+    }
+} 
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
+*/
