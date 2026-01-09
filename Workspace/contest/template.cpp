@@ -7,12 +7,10 @@
 
 using namespace std;
 using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
 using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
-const int N = (int)2e5 + 9;
-const int M = (int)1e5 + 9;
-const int mod =  998244353;
-const ll INF = LLONG_MAX;
 const double PI = acos(-1.0);
 
 void solve() {
