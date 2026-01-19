@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2176/C
+//https://codeforces.com/problemset/problem/2180/C
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,57 +12,41 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<ll> odd;
-    vector<ll> even;
-    
-    for (int i = 0; i < n; ++i) {
-        int num; cin >> num;
-        if (num & 1) {
-            odd.push_back(num);
-        } else {
-            even.push_back(num);
+    ll n, k; cin >> n >> k;
+
+    vector<ll> ans(k + 5);
+
+    if (k & 1) {
+        for (int i = 1; i <= k; ++i) {
+            ans[i] = n;
+        }
+    } else {
+        ll num = 0;
+
+        for (int pos = log2(n); pos >= 0; --pos) {
+            if ((n >> pos) & 1) {
+                for (int i = 1; i <= k; ++i) {
+                    if (i != min(num + 1, k)) {
+                        ans[i] |= (1ll << pos);
+                    }                    
+                }
+
+                if (num < k) ++num;
+            }
+            else {
+                for (int i = 1; i <= (num | 1) - 1; ++i) {
+                    ans[i] |= (1ll << pos);
+                }
+            }
         }
     }
 
-    ranges::sort(odd, greater());
-    ranges::sort(even, greater());
-
-    for (int i = 1; i < even.size(); ++i) {
-        even[i] += even[i - 1];
-        // cout << even[i] << " \n"[i == even.size() - 1];
+    for (int i = 1; i <= k; ++i) {
+        cout << ans[i] << " \n"[i == k];
     }
 
-    vector<ll> ans(n + 1);
-    if (odd.size() == 0) {
-        for (int i = 1; i <= n; ++i) {
-            cout << "0" << " \n"[i == n];
-        }
-        return;
-    }
-
-    ans[1] = odd.front();
-    for (int i = 1; i <= even.size(); ++i) {
-        // cout << ans[1] <<  "  " << even[i - 1] << " " ;
-        ans[i + 1] = ans[1] + even[i - 1]; 
-        // cout << ans[i + 1]<< " \n"[i == even.size()];
-    }
-
-    // if (even.size() == 0) even.push_back(0);
-
-    for (int i = even.size() + 2; i <= n; ++i) {
-        ans[i] = ans[i - 2];
-    }
-
-    if (odd.size() % 2 == 0) {
-        ans.back() = 0;
-    }
-
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
 } 
- 
+
 int main() {
     
     __BUFF__

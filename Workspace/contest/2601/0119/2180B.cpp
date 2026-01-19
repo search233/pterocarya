@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2176/C
+//https://codeforces.com/problemset/problem/2180/B
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -13,56 +13,27 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<ll> odd;
-    vector<ll> even;
-    
+
+    vector<string> a(n);
     for (int i = 0; i < n; ++i) {
-        int num; cin >> num;
-        if (num & 1) {
-            odd.push_back(num);
+        cin >> a[i];
+    }
+
+    string s = a.front();
+
+    for (int i = 1; i < n; ++i) {
+        string s1 = s + a[i];
+        string s2 = a[i] + s;
+        if (s1 < s2) {
+            s = s1;
         } else {
-            even.push_back(num);
+            s = s2;
         }
     }
 
-    ranges::sort(odd, greater());
-    ranges::sort(even, greater());
-
-    for (int i = 1; i < even.size(); ++i) {
-        even[i] += even[i - 1];
-        // cout << even[i] << " \n"[i == even.size() - 1];
-    }
-
-    vector<ll> ans(n + 1);
-    if (odd.size() == 0) {
-        for (int i = 1; i <= n; ++i) {
-            cout << "0" << " \n"[i == n];
-        }
-        return;
-    }
-
-    ans[1] = odd.front();
-    for (int i = 1; i <= even.size(); ++i) {
-        // cout << ans[1] <<  "  " << even[i - 1] << " " ;
-        ans[i + 1] = ans[1] + even[i - 1]; 
-        // cout << ans[i + 1]<< " \n"[i == even.size()];
-    }
-
-    // if (even.size() == 0) even.push_back(0);
-
-    for (int i = even.size() + 2; i <= n; ++i) {
-        ans[i] = ans[i - 2];
-    }
-
-    if (odd.size() % 2 == 0) {
-        ans.back() = 0;
-    }
-
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
+    cout << s << '\n';
 } 
- 
+
 int main() {
     
     __BUFF__
