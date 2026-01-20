@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2179/E
+//https://codeforces.com/problemset/problem/2179/F
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -11,77 +11,121 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-void solve() {
-    ll n, x, y;
-    cin >> n >> x >> y;
-    string s; cin >> s;
-    s = ' ' + s;
-    vector<ll> p(n + 2);
-    for (int i = 1; i <= n; ++i) {
-        cin >> p[i];
+void first() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> e(n + 1);
+    vector<char> s(n + 1); 
+
+    int u, v;
+
+    for (int i = 0; i < m; ++i) {
+        cin >> u >> v;
+        e[u].push_back(v);
+        e[v].push_back(u);
     }
 
-    ll sump = 0;
-    ll sum[2] = {0};
-    ll left[2] = {0};
-    ll cnt[2] = {0};
-    ll sum2[2] = {0};
-    
+    auto ch = [&](int d) -> char {
+        char ch;
+        if (d % 3 == 0) ch = 'r';
+        if (d % 3 == 1) ch = 'g';
+        if (d % 3 == 2) ch = 'b';
+
+        return ch;
+    };
+
+    queue<arr2> qu;
+    qu.push({1, 0});
+    vector<int> vis(n + 1);
+
+    while (!qu.empty()) {
+        auto [u, d] = qu.front();
+        qu.pop();
+        vis[u] = 1;
+        s[u] = ch(d);
+
+        for (auto& v : e[u]) {
+            if (vis[v]) continue;
+            else {
+                // cout << v << ' ';
+                qu.push({v, d + 1});
+            }
+        }
+        // cout << '\n';
+    }
+
     for (int i = 1; i <= n; ++i) {
-        int a = s[i] - '0';
-        int b = a ^ 1;
+        cout << s[i];
+    }
+    cout << '\n';
+}
 
-        cnt[a]++;
+void second() {
+    int q; cin >> q;
 
-        sum[a] += (p[i] / 2) + 1;
-        sum[b] += (p[i] / 2);
-        sum2[b] += (p[i] / 2);
-        sump += p[i];
-
-        if (p[i] % 2 == 0) {
-            --sum[b];
-            --sum2[b];
-            ++left[a];
+    for (int i = 0; i < q; ++i) {
+        int len; cin >> len;
+        string s; cin >> s;
+        int cnt[3] = {0};
+        for (int i = 0; i < len; ++i) {
+            if (s[i] == 'r') ++cnt[0];
+            else if (s[i] == 'g') ++cnt[1];
+            else ++cnt[2];
         }
 
-        // cout << p[i] << ' ' << sum[0] << ' ' << sum[1] << '\n';
-    } 
+        char c;
 
-    if (x + y < sump || sum[0] > x + sum2[0] || sum[1] > y + sum2[1]) {
-        cout << "NO\n";
-        return;
-    }
-
-    x -= sum[0];
-    y -= sum[1];
-
-    if (cnt[0] && cnt[1]) {
-        cout << "YES\n";
-    }
-    else {
-        if (cnt[0] && x + left[0] < y) {
-            cout << "NO\n";
-        } else if (cnt[1] && y + left[1] < x) {
-            cout << "NO\n";
+        if (cnt[0] && cnt[2]) {
+            c = 'r';
+        } else if (cnt[0] && cnt[1]) {
+            c = 'g';
+        } else if (cnt[1] && cnt[2]) {
+            c = 'b';
         } else {
-            cout << "YES\n";
+            if (cnt[0]) {
+                c = 'r';
+            } else if (cnt[1]) {
+                c = 'g';
+            } else {
+                c = 'b';
+            }
+        }
+            
+        for (int i = 0; i < len; ++i) {
+            if (s[i] == c)  {
+                cout << i + 1 << '\n';
+                break;
+            }
         }
     }
+}
 
-    //  cout << x << ' ' <<  y << ' ' << left[0] << ' ' << left[1] << '\n';
-} 
 
 int main() {
     
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    string s;
+    cin >> s;
 
-    while (_--) {
-        solve();
-        // cout << "\n-----------\n";
+    if (s == "first") {        
+        cin >> _;
+        while (_--) {
+            first();
+            // cout << "-----------\n";
+        }
     }
+    else {
+        cin >> _;
+        while (_--) {
+            second();
+            // cout << "-----------\n";
+        }
+    }
+
+
 
     return 0;
 }
