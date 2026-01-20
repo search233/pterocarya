@@ -28,7 +28,7 @@ void solve() {
                 for (int i = 1; i <= k; ++i) {
                     if (i != min(num + 1, k)) {
                         ans[i] |= (1ll << pos);
-                    }                    
+                    }
                 }
 
                 if (num < k) ++num;

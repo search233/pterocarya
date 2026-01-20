@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2179/E
+//https://codeforces.com/problemset/problem/2179/D
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -11,64 +11,46 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
+int qpow(int a, int b) {
+    int fac = a;
+    int ans = 1;
+
+    while (b) {
+        if (b & 1) ans *= fac;
+
+        b >>= 1;
+        fac *= fac;
+    }
+
+    return ans;
+}
+
 void solve() {
-    ll n, x, y;
-    cin >> n >> x >> y;
-    string s; cin >> s;
-    s = ' ' + s;
-    vector<ll> p(n + 2);
-    for (int i = 1; i <= n; ++i) {
-        cin >> p[i];
-    }
+    int n; cin >> n;
 
-    ll sump = 0;
-    ll sum[2] = {0};
-    ll left[2] = {0};
-    ll cnt[2] = {0};
-    ll sum2[2] = {0};
     
-    for (int i = 1; i <= n; ++i) {
-        int a = s[i] - '0';
-        int b = a ^ 1;
+    int num = (1 << n) - 1;
+    
+    cout << num << " ";
+    int len = n;
 
-        cnt[a]++;
-
-        sum[a] += (p[i] / 2) + 1;
-        sum[b] += (p[i] / 2);
-        sum2[b] += (p[i] / 2);
-        sump += p[i];
-
-        if (p[i] % 2 == 0) {
-            --sum[b];
-            --sum2[b];
-            ++left[a];
-        }
-
-        // cout << p[i] << ' ' << sum[0] << ' ' << sum[1] << '\n';
-    } 
-
-    if (x + y < sump || sum[0] > x + sum2[0] || sum[1] > y + sum2[1]) {
-        cout << "NO\n";
-        return;
-    }
-
-    x -= sum[0];
-    y -= sum[1];
-
-    if (cnt[0] && cnt[1]) {
-        cout << "YES\n";
-    }
-    else {
-        if (cnt[0] && x + left[0] < y) {
-            cout << "NO\n";
-        } else if (cnt[1] && y + left[1] < x) {
-            cout << "NO\n";
-        } else {
-            cout << "YES\n";
+    while (len > 1) {
+        num >>= 1;
+        --len;
+        for (int i = 0; i < (1 << n) - 1; ++i) {
+            if ((num & i) == num && (i >> len) % 2 == 0) {
+                // cout << num << ' ' << i << '\n';
+                cout << i << ' ';
+            }
         }
     }
 
-    //  cout << x << ' ' <<  y << ' ' << left[0] << ' ' << left[1] << '\n';
+    num = (1 << n) - 1;
+    for (int i = 0; i < num; ++i) {
+        if (i & 1) continue;
+        cout << i << " \n"[i == num - 1];
+    }
+
 } 
 
 int main() {

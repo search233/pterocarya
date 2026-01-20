@@ -1,57 +1,76 @@
-#include <bits/stdc++.h>
-
-using i64 = long long;
+#include<bits/stdc++.h>
+#define int long long
+using namespace std;
+using ll = long long;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const int N = (int)2e5 + 9;
+const int M = (int)1e5 + 9;
+const int mod = (int)1e9 + 7;
 
 void solve() {
-	int n;
-    std::cin >> n;
-    std::vector<int> a1(n + 1), a2(n + 1);
-    for (int i = 1; i <= n; ++ i) {
-        std::cin >> a1[i];
+    int n, x, y;
+    cin >> n >> x >> y;
+    string s;
+    cin >> s;
+    vector<arr2> p(n + 5);
+    int sum = 0;
+    for (int i = 1; i <= n; i++) {
+        cin >> p[i][0];
+        sum += p[i][0];
     }
+    int cnta = 0, cntb = 0;
+    int cba = 0, cbb = 0;
+    for (int i = 0; i < s.size(); i++) {
+        if (s[i] == '0') {
+            cnta++;
+            p[i + 1][1] = 0;
+            cba += p[i + 1][0] / 2 + 1;
+        }
+        else {
+            cntb++;
+            p[i + 1][1] = 1;
+            cbb += p[i + 1][0] / 2 + 1;
+        }
+    }
+    if (cnta == n) {
+        if (x - y < cnta) {
+            cout << "NO\n";
+            return ;
+        }
+    }
+    if (cntb == n) {
+        if (y - x < cntb) {
+            cout << "NO\n";
+            return ;
+        }
+    }
+    if (x < cnta || y < cntb || x < cba || y < cbb) {
+        cout << "NO\n";
+        return ;
+    } 
+    if (sum > x + y) {
+        cout << "NO\n";
+        return ;
+    }
+    cout << "YES\n";
+    // sort(p.begin() + 1, p.begin() + 1 + n);
+    // vector<int> aa, bb;
+    // for (int i = 1; i <= n; i++) {
+    //     if (p[i][1] == 0) {
 
-    for (int i = 1; i <= n; ++ i) {
-        std::cin >> a2[i];
-    }
-
-    constexpr int inf = 1e9;
-    std::vector<int> pre_min(n + 1), pre_max(n + 1);
-    pre_min[0] = inf;
-    pre_max[0] = -inf;
-    for (int i = 1; i <= n; ++ i) {
-        pre_min[i] = std::min(pre_min[i - 1], a1[i]);
-        pre_max[i] = std::max(pre_max[i - 1], a1[i]);
-    }
-
-    std::vector<int> suf_min(n + 2), suf_max(n + 2);
-    suf_min[n + 1] = inf;
-    suf_max[n + 1] = -inf;
-    for (int i = n; i >= 1; -- i) {
-        suf_min[i] = std::min(suf_min[i + 1], a2[i]);
-        suf_max[i] = std::max(suf_max[i + 1], a2[i]);
-    }
-
-    std::vector<int> R(2 * n + 1);
-    for (int i = 1; i <= n; ++ i) {
-        int l = std::min(pre_min[i], suf_min[i]);
-        int r = std::max(pre_max[i], suf_max[i]);
-        R[r] = std::max(R[r], l);
-    }
-
-    i64 ans = 0;
-    for (int i = 1; i <= 2 * n; ++ i) {
-        R[i] = std::max(R[i], R[i - 1]);
-        ans += R[i];
-    }
-    std::cout << ans << "\n";
+    //     }
+    // }
 }
 
-int main() {
-	std::ios::sync_with_stdio(false), std::cin.tie(0), std::cout.tie(0);
-	int t = 1;
-	std::cin >> t;
-	while (t -- ) {
-		solve();
-	}
-	return 0;
+signed main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    int _ = 1;
+    cin >> _;
+    while(_--) {
+        solve();
+    }
+    return 0;
 }

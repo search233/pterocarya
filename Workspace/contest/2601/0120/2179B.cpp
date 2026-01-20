@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2179/E
+//https://codeforces.com/problemset/problem/2179/B
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,63 +12,26 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    ll n, x, y;
-    cin >> n >> x >> y;
-    string s; cin >> s;
-    s = ' ' + s;
-    vector<ll> p(n + 2);
+    int n; cin >> n;
+    vector<int> a(n + 1);
+
     for (int i = 1; i <= n; ++i) {
-        cin >> p[i];
+        cin >> a[i];
     }
 
-    ll sump = 0;
-    ll sum[2] = {0};
-    ll left[2] = {0};
-    ll cnt[2] = {0};
-    ll sum2[2] = {0};
-    
-    for (int i = 1; i <= n; ++i) {
-        int a = s[i] - '0';
-        int b = a ^ 1;
-
-        cnt[a]++;
-
-        sum[a] += (p[i] / 2) + 1;
-        sum[b] += (p[i] / 2);
-        sum2[b] += (p[i] / 2);
-        sump += p[i];
-
-        if (p[i] % 2 == 0) {
-            --sum[b];
-            --sum2[b];
-            ++left[a];
-        }
-
-        // cout << p[i] << ' ' << sum[0] << ' ' << sum[1] << '\n';
-    } 
-
-    if (x + y < sump || sum[0] > x + sum2[0] || sum[1] > y + sum2[1]) {
-        cout << "NO\n";
-        return;
+    ll sum = 0;
+    for (int i = 2; i <= n; ++i) {
+        sum += abs(a[i] - a[i - 1]);
     }
 
-    x -= sum[0];
-    y -= sum[1];
+    int mx = max(abs(a[1] - a[2]), abs(a[n - 1] - a[n]));
 
-    if (cnt[0] && cnt[1]) {
-        cout << "YES\n";
-    }
-    else {
-        if (cnt[0] && x + left[0] < y) {
-            cout << "NO\n";
-        } else if (cnt[1] && y + left[1] < x) {
-            cout << "NO\n";
-        } else {
-            cout << "YES\n";
-        }
+    for (int i = 2; i < n; ++i) {
+        mx = max(abs(a[i] - a[i - 1]) + abs(a[i] - a[i + 1]) - abs(a[i + 1] - a[i - 1]), mx);
+        // cout << mx << " ";
     }
 
-    //  cout << x << ' ' <<  y << ' ' << left[0] << ' ' << left[1] << '\n';
+    cout << sum - mx << '\n';
 } 
 
 int main() {
@@ -80,7 +43,7 @@ int main() {
 
     while (_--) {
         solve();
-        // cout << "\n-----------\n";
+        // cout << "-----------\n";
     }
 
     return 0;

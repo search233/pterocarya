@@ -5,9 +5,9 @@ int main()
 {
 	ios::sync_with_stdio(0);
 	cin.tie(0);
-	freopen("/home/yangz/Documents/pterocarya/#vscode_Workspace/#For_cpp/check/diff.log", "w", stdout);
+	freopen("/home/yangz/Documents/pterocarya/Workspace/check/diff.log", "w", stdout);
 
-	system("cd /home/yangz/Documents/pterocarya/#vscode_Workspace/#For_cpp/check/src");
+	system("cd /home/yangz/Documents/pterocarya/Workspace/check/src");
 	system("g++ -std=c++23 data.cpp -o ../compiled/data");
 	system("g++ -std=c++23 std_code.cpp -o../compiled/std_code");
 	system("g++ -std=c++23 my_code.cpp -o ../compiled/my_code");
