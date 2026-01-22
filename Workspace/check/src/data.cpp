@@ -16,23 +16,17 @@ void solve() {
     // int n = rnd(3, 9);
     // int m = rnd(1, 10);
 
-    int n = 5;
-    int x = rnd(1, 100);
-    int y = rnd(1, 100);
+    int n = 4;
 
-    cout << n << ' ' << x << ' ' << y << '\n';
+    cout << n <<  '\n';
 
+    cout << rnd(1, 100);
     for (int i = 0; i < n; ++i) {
-        char ch  = rnd(0, 1) + '0';
-        cout << ch;
+        int num  = rnd(0, 70) ;
+        cout << ' ' << num;
     }
 
     cout << '\n';
-
-    for (int i = 0; i< n ; ++i) {
-        int p  =  rnd(1, 10);
-        cout << p << " \n"[i == n - 1];
-    }
 }
 
 int main() {
