@@ -12,6 +12,28 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 const ll MOD = 998244353;
 
+ll mod (ll x) {
+    return x % MOD;
+}
+
+ll qpow (ll a, ll b) {
+    ll fac = a;
+    ll ans = 1;
+
+    while (b) {
+        if (b & 1) {
+            ans = mod(ans * fac);
+        }
+
+        b >>= 1ll;
+        fac = mod(fac * fac);
+    }
+
+    return ans;
+};
+
+
+
 void solve() {
     int n; cin >> n;
     vector<int> a(n + 1);
@@ -36,29 +58,39 @@ void solve() {
     int cost = (n - cnt) * (mx - 1)  - sum;
     int frt = a[0] - cost;
 
-    // cout << sum << '\n';
     if (frt < 0) {
         cout << "0\n";
         return;
     }
+ 
+    frt = min(frt, n - cnt);
+    
+    vector<ll> fc, inv(n + 1);
+    fc.push_back(1);
 
-    auto mod = [](ll x) -> int {
-        return x % MOD;
+    for (ll i = 1; i <= n; ++i) {
+        fc.push_back(mod(fc.back() * i));
+    }
+
+    inv[n] = qpow(fc[n], MOD - 2);
+
+    for (int i = n; i > 0; --i) {
+        inv[i - 1] = mod(inv[i] * i);
+    }
+
+    auto C = [&](int k, int x) {
+        return mod(mod(fc[k] * inv[x]) * inv[k - x]);
     };
 
-    ll ans = 1;
-    for (int i = 1; i <= n - cnt; ++i) {
-        ans = mod(ans * i);
-    }
+    // ll ans = 0;
+    ll ans = mod(mod(fc[frt + cnt] * fc[n - frt - cnt]) * C(n - cnt, frt)); 
 
-    for (int i = 1; i <= cnt; ++i) {
-        ans = mod(ans * i);
-    }
 
-    frt = min(frt, n - cnt);
-
-    // cout << ans << ' ' << frt << '\n';
-    cout << mod(ans * (frt + 1)) << '\n';
+    // for (int i = 0; i <= frt; ++i) {
+    //     ans = mod(ans + mod(mod(mod(mod(cnt * fc[cnt - 1 + i])) * fc[n - i - cnt]) * C(i, n - cnt)));
+    // }
+    
+    cout << ans << '\n';
 } 
 
 int main() {

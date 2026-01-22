@@ -1,76 +1,75 @@
-#include<bits/stdc++.h>
-#define int long long
+#include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
-const int N = (int)2e5 + 9;
-const int M = (int)1e5 + 9;
-const int mod = (int)1e9 + 7;
+const ll mod = 998244353;
 
-void solve() {
-    int n, x, y;
-    cin >> n >> x >> y;
-    string s;
-    cin >> s;
-    vector<arr2> p(n + 5);
-    int sum = 0;
-    for (int i = 1; i <= n; i++) {
-        cin >> p[i][0];
-        sum += p[i][0];
-    }
-    int cnta = 0, cntb = 0;
-    int cba = 0, cbb = 0;
-    for (int i = 0; i < s.size(); i++) {
-        if (s[i] == '0') {
-            cnta++;
-            p[i + 1][1] = 0;
-            cba += p[i + 1][0] / 2 + 1;
-        }
-        else {
-            cntb++;
-            p[i + 1][1] = 1;
-            cbb += p[i + 1][0] / 2 + 1;
-        }
-    }
-    if (cnta == n) {
-        if (x - y < cnta) {
-            cout << "NO\n";
-            return ;
-        }
-    }
-    if (cntb == n) {
-        if (y - x < cntb) {
-            cout << "NO\n";
-            return ;
-        }
-    }
-    if (x < cnta || y < cntb || x < cba || y < cbb) {
-        cout << "NO\n";
-        return ;
-    } 
-    if (sum > x + y) {
-        cout << "NO\n";
-        return ;
-    }
-    cout << "YES\n";
-    // sort(p.begin() + 1, p.begin() + 1 + n);
-    // vector<int> aa, bb;
-    // for (int i = 1; i <= n; i++) {
-    //     if (p[i][1] == 0) {
+vector<ll> f(1e6 + 10, 1), inv(1e6 + 10, 1);
 
-    //     }
-    // }
+ll qpow(ll a,ll b){
+	ll res = 1;
+	while(b){
+		if(b&1)
+			res = res * a % mod;
+		a = a * a % mod;
+		b >>= 1;
+	}
+	return res;
 }
 
-signed main()
+ll C(ll n,ll m){
+	if(n<m)
+		return 0;
+	return f[n] * inv[m] % mod * inv[n - m] % mod;
+}
+
+void solve()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(0);
-    int _ = 1;
-    cin >> _;
-    while(_--) {
-        solve();
-    }
-    return 0;
+	ll n; cin >> n;
+	vector<ll> a(n + 1, 0);
+	for(auto &i : a){
+		cin >> i;
+	}
+
+	ll maxn = 0;
+	for (ll i = 1; i <= n;i++){
+		maxn = max(maxn, a[i]);
+	}
+	ll cnt = 0;
+	for (ll i = 1; i <= n;i++){
+		if(a[i]<maxn){
+			a[0] -= maxn - 1 - a[i];
+			a[i] = maxn - 1;
+			cnt++;
+		}
+	}
+	// cout << cnt << ' ' << a[0] << endl;
+	if(a[0]<0){
+		return cout << 0 << endl, void();
+	}
+	if(cnt<=a[0]){
+		return cout << f[n] << endl, void();
+	}
+	// cout << n - cnt << ' ' << cnt - a[0] << ' ';
+	cout << f[n - cnt] * f[cnt] % mod * C(n - cnt + a[0], a[0]) % mod << endl;
+}
+
+int main()
+{
+	ios::sync_with_stdio(0);
+	cin.tie(0);
+	cout.tie(0);
+
+	for (ll i = 1; i <= 1e6;i++){
+		f[i] = f[i - 1] * i % mod;
+		inv[i] = qpow(f[i], mod - 2);
+	}
+
+	ll _ = 1;
+	cin >> _;
+	while (_--)
+	{
+		solve();
+	}
+
+	return 0;
 }

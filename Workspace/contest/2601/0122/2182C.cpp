@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2182/D
+//https://codeforces.com/problemset/problem/2182/C
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -10,55 +10,35 @@ using ull = uint64_t;
 using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
-const ll MOD = 998244353;
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
-    int mx = 0;
-    ll sum = 0;
-    int cnt = 0;
+    vector<int> a(n);
+    vector<int> b(n);
+    vector<int> c(n);
 
-    cin >> a[0];
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
-        sum += a[i];
-        if (a[i] > mx) {
-            cnt = 1;
-            mx = a[i];
-        } else if (a[i] == mx) {
-            ++cnt;
+    for (auto& i : a) cin >> i;
+    for (auto& i : b) cin >> i;
+    for (auto& i : c) cin >> i;
+
+    auto ck = [&](vector<int>& x, vector<int>& y, int p) -> bool {
+        for (int i = 0; i < n; ++i) {
+            if (x[i] >= y[(i + p) % n]) {
+                return false;
+            }
         }
-    }
 
-    sum -= cnt * mx;
-
-    int cost = (n - cnt) * (mx - 1)  - sum;
-    int frt = a[0] - cost;
-
-    // cout << sum << '\n';
-    if (frt < 0) {
-        cout << "0\n";
-        return;
-    }
-
-    auto mod = [](ll x) -> int {
-        return x % MOD;
+        return true;
     };
 
-    ll ans = 1;
-    for (int i = 1; i <= n - cnt; ++i) {
-        ans = mod(ans * i);
+
+    ll cnt[2] = {0};
+    for (int i = 0; i < n; ++i) {
+        cnt[0] += ck(a, b, i);
+        cnt[1] += ck(b, c, i);
     }
 
-    for (int i = 1; i <= cnt; ++i) {
-        ans = mod(ans * i);
-    }
-
-    frt = min(frt, n - cnt);
-
-    // cout << ans << ' ' << frt << '\n';
-    cout << mod(ans * (frt + 1)) << '\n';
+    cout << cnt[0] * cnt[1] * n << '\n';
 } 
 
 int main() {
