@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2183/B
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -15,32 +13,23 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
-    vector<int> b(n + 1);
+    int k; cin >> k;
+    set<int> st;
 
+    for (int i = 0; i < n; ++i) {
+        int num;
+        cin >> num;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+        st.insert(num);
     }
 
-    vector<vector<int>> mp(1001);
-    for (int i = 1; i <= n; ++i) {
-        cin >> b[i];
-        mp[b[i]].push_back(a[i]);
+    int mx = 0;
+    for (int i = 0; i < n; ++i) {
+        if (st.count(i)) ++mx;
+        else break;
     }
 
-    ll ans = 0;
-    for (int i = 1; i <= 1001; ++i) {
-        ll fac = i * i;
-        ll cnt[2] {};
-        for (auto& x : mp[fac]) {
-            if (x % fac == 0) {
-                ++cnt[0];
-            }
-        }
-
-        ans += cnt[0] * (cnt[0] - 1) / 2;
-    }
+    cout  << min(mx, k - 1) << '\n';
 } 
 
 int main() {
@@ -48,7 +37,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
