@@ -1,4 +1,4 @@
-//https://atcoder.jp/contests/abc442/tasks/abc442_e
+//https://codeforces.com/problemset/problem/2193/D
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,31 +12,34 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, q;
-    cin >> n >> q;
-    
-    vector<arr3> m(n);
+    int n; cin >> n;
 
-    for (int i = 0; i < n; ++i) {
-        cin >> m[i][0] >> m[i][1];
+
+    map<ll, int> a;
+    vector<ll> b(n + 1);
+
+    for (int i = 1; i <= n; ++i) {
+        int num; cin >> num;
+        ++a[num];
     }
 
-    auto cross = [](arr3 a, arr3 b) -> ll {
-        return a[0] * b[1] - a[1] * b[0];
-    };
-
-    auto cmp = [&](arr3 a, arr3 b) -> bool {
-        int ah = (a[1] < 0 || (a[1] == 0 && a[0] < 0));
-        int bh = (b[1] < 0 || (b[1] == 0 && b[0] < 0));
-        if (ah != bh) return ah < bh;
-        return cross(a, b) > 0;
-    };
-
-
-    for (int i = 1; i <= q; ++i) {
-        int a, b;
-        cin >> a >> b; 
+    for (int i = 1; i <= n; ++i) {
+        cin >> b[i];
+        b[i] += b[i - 1];
     }
+
+    int sum = n;
+    ll ans = 0;
+    for (auto [x, cnt] : a) {
+        int pos = upper_bound(b.begin() + 1, b.end(), sum) - b.begin();
+
+        
+        ans = max(ans, x * (pos - 1));
+        // cout << x << ' ' << pos - 1 << ' ' << ans << '\n';
+        sum -= cnt;
+    }
+
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -44,7 +47,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -60,11 +63,11 @@ int main() {
 ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
 │~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│
 ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
-│ Tab │ Q │ W │ E │ R │ T │ b │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
+│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
 ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
 │ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │              
 ├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐    
-│ Shift  │ Z │ a │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
+│ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
 ├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐
 │Ctrl │Win │Alt │         Space         │Alt │ Fn │Menu│Ctrl│ │ ← │ ↓ │ → │
 └─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘
