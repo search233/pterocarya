@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2193/F
+//https://codeforces.com/problemset/problem/2183/C
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,75 +12,23 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n;
-    int xa, xb, ya, yb;
-    cin >> n >> xa >> ya >> xb >> yb;
+    int n, m, k;
+    cin >> n >> m >> k;
 
+    int mx = 0;
+    for (int l = 0; l < k; ++l) {
+        int t = l * 2 - 1;
 
-    vector<arr2> p(n);
- 
-    for (int i = 0; i < n; ++i) {
-        cin >> p[i][0];
-    }
-    for (int i = 0; i < n; ++i) {
-        cin >> p[i][1];
-    }
-
-    p.push_back({xa, ya});
-    p.push_back({xb, yb});
-
-    map<int, vector<int>> mp;
-
-    for (int i = 0; i < n + 2; ++i) {
-        mp[p[i][0]].push_back(p[i][1]);
-    }
-
-
-    vector<vector<int>> x;
-    for (auto [xi, vec] : mp) {
-        ranges::sort(vec);
-        x.push_back(vec);
-    }
-
-    ll ans = xb - xa;
-
-    // for (int i = 0; i < x.size(); ++i) {
-    //     cout << i << "   ";
-    //     for (int y : x[i]) {
-    //         cout << y << ' ';
-    //     }
-    //     cout << '\n';
-    // }
-    int poss = xa;
-    for (int i = 0; i < x.size() - 1; ++i) {
-        int mn = INT_MAX;
-        for (auto y : x[i]) {
-            int pos = lower_bound(x[i + 1].begin(), x[i + 1].end(), y) - x[i + 1].begin();
-            
-            // cout <<"y =    " <<  y << '\n';
-            if (pos < x[i + 1].size()) {
-                // cout << x[i + 1][pos] << '\n';
-                if (mn > abs(y - x[i + 1][pos]) + abs(y - poss)) {
-                    mn = abs(y - x[i + 1][pos]) + abs(y - poss);
-                    poss = x[i + 1][pos];
-                }
-            }
-
-            --pos;
-            if (pos >= 0) {
-                // cout << x[i + 1][pos] << '\n';
-                if (mn > abs(y - x[i + 1][pos]) + abs(y - poss)) {
-                    mn = abs(y - x[i + 1][pos]) + abs(y - poss);
-                    poss = x[i + 1][pos];
-                }
-            }
+        if (m - t < l) {
+            mx = max(mx, l + min(m - t, n - k));
         }
-        cout << "mn = " <<  mn << '\n';
-        // cout << "------\n";
-        ans += mn + x[i].back() - x[i].front();
+
+        if (m + l >= t * 2 + 1) {
+            mx = max(mx, l + min(n - k, (m + 1 - l) / 2));
+        }
     }
 
-    cout << ans << '\n';
+    cout << mx + 1 << '\n';
 } 
 
 int main() {
@@ -92,7 +40,7 @@ int main() {
 
     while (_--) {
         solve();
-        cout << "-----------\n";
+        // cout << "-----------\n";
     }
 
     return 0;
