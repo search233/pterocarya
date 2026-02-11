@@ -14,63 +14,71 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int n, k; cin >> n >> k;
+    vector<int> a(n + 1);
+    vector<int> nxt(n + 1);
 
-    vector<vector<int>>  e(n + 1);
+    int cnt = 0;
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        if(a[i]) ++cnt;
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+        nxt[i] = a[i] + i;
+        if (i) nxt[i] = max(nxt[i], nxt[i - 1]);
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    if (cnt <= k) {
+        cout << "0\n";
+        return;
+    }
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+    int l = 1, r = n + 1;
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
+    auto ck = [&](int tsum) -> bool {
+        int sum = 1;
+        int t = 0;
+        int p = 0;
 
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
+        while (p < n && a[p] == 0) ++p;
 
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
+        while (p < n) {
+            p = nxt[p];
+            ++t;
+
+            if (p >= n) break;
+
+            if (nxt[p] == p) {
+                while (p < n && nxt[p] == p) {
+                    ++p;
+                }
+
+                if (p < n) {
+                    t = 0;
+                    ++sum;
                 }
             }
+            if (t == tsum) {
+                t = 0;
+                ++p;
+                while (p < n && a[p] == 0) ++p;
+                if (p < n) ++sum;
+            }
         }
+
+        return sum <= k;
     };
 
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+    while(l <= r) {
+        int mid = l + r >> 1;
+        if (ck(mid)) {
+            r = mid - 1;
+        }
+        else { 
+            l = mid + 1;
+        }
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
+    cout << array{-1, l}[l < n] << '\n';
 } 
 
 int main() {
@@ -78,7 +86,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +116,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

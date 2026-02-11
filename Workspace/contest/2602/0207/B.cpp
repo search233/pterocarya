@@ -12,65 +12,54 @@ using ull = uint64_t;
 using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
+const int N = 4e4 + 10;
+
+bool vis[N + 10];
+int prime[N + 10], cnt = 0;
+set<int> st;
+
+void init(int n){
+	for(int i = 2; i <= n; i++){
+		if(vis[i] == false) {
+            prime[++cnt] = i ;
+            st.insert(i);
+        }
+			
+		for(int j = 1; j <= cnt && prime[j] <= n / i; ++j){
+			vis[i * prime[j]] = true;
+			if(i % prime[j] == 0)
+				break;
+		} 
+	}
+	return;
+}
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int n; cin >> n;
+    vector<int> a;
 
-    vector<vector<int>>  e(n + 1);
-
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+    for (int i = 0; i < n; ++i) {
+        int num; cin >> num;
+        if (!st.count(num)) {
+            a.push_back(num);
+        }
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    for (int i = 1; i <= cnt; ++i) {
+        int p = prime[i];
+        vector<int> ans;
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+        for (int i = 0; i < a.size(); ++i) {
+            if (a[i] % p == 0) ans.push_back(a[i]);
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
+            if (ans.size() > 1) {
+                cout << ans[0] << ' ' << ans[1] << '\n';
+                return;
             }
         }
-    };
-
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
+    cout << "-1\n";
 } 
 
 int main() {
@@ -78,7 +67,9 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
+
+    init(N);
 
     while (_--) {
         solve();
@@ -108,4 +99,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

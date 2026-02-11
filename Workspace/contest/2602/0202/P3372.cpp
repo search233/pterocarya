@@ -1,9 +1,8 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://www.luogu.com.cn/problem/P3372
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+#define int long long
 
 using namespace std;
 using ll = long long;
@@ -13,67 +12,126 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-void solve() {
-    int n, m;
-    cin >> n >> m;
+struct SegTree{
+    #define ls (rt << 1)
+    #define rs (rt << 1 | 1)
 
-    vector<vector<int>>  e(n + 1);
+    struct node {
+        int l, r;
+        int sum;
+        int add;
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
-    }
-
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
-        }
+        node(): l(0), r(0), sum(0), add(0){}
     };
 
+    int len;
+    vector<node> info;
 
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+    SegTree(const vector<int>& vec) {
+        len = vec.size() - 1;
+        info.assign(len << 2, node());
+
+        auto build = [&](auto& build, int rt, int l, int r) -> void {
+            info[rt].l = l;
+            info[rt].r = r;
+            
+            if (l == r) {
+                info[rt].sum = vec[l];
+                return;
+            }
+
+            int mid = l + r >> 1;
+            build(build, ls, l, mid);
+            build(build, rs, mid + 1, r);
+            push_up(rt);
+        };
+
+        build(build, 1, 1, len);
+    }   
+
+    void push_up(int rt) {
+        info[rt].sum = info[ls].sum+ info[rs].sum;
     }
 
+    void push_down(int rt) {
+        if (info[rt].add && info[rt].l != info[rt].r) {
+
+            info[rs].add += info[rt].add;
+            info[rs].sum += (info[rs].r - info[rs].l + 1) * info[rt].add;
+            
+            info[ls].add += info[rt].add;
+            info[ls].sum += (info[ls].r - info[ls].l + 1) * info[rt].add;
+
+            info[rt].add = 0;
+        }
+    }
+
+    void add_modify(int l, int r, int val, int rt = 1) {
+        if (info[rt].l >= l && info[rt].r <= r) {
+            info[rt].sum += (info[rt].r - info[rt].l + 1) * val;
+            info[rt].add += val;
+            return;
+        }
+
+        int mid = info[rt].l + info[rt].r >> 1;
+        push_down(rt);
+
+        if (l <= mid) {
+            add_modify(l, r, val, ls);
+        }
+
+        if (r >= mid + 1) {
+            add_modify(l, r, val, rs);
+        }
+
+        push_up(rt);
+    }
+
+    int query(int l, int r, int rt = 1) {
+        if (l <= info[rt].l && info[rt].r <= r) {
+            return info[rt].sum;
+        }
+
+        push_down(rt);
+        int mid = info[rt].l + info[rt].r >> 1;
+
+        if (r <= mid) return query(l, r, ls);
+        if (l > mid) return query(l, r, rs);
+
+        return query(l, r, ls) + query(l, r, rs);
+    }
+};
+
+void solve() {
+    int n, m; cin >> n >> m;
+
+    vector<int> a(n + 1);
     for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+        cin >> a[i];
+    }
+
+    SegTree st(a);
+
+    for (int i = 0; i < m; ++i) {
+        int tag; cin >> tag;
+        if (tag == 1) {
+            int x, y, k;
+            cin >> x >> y >> k;
+
+            st.add_modify(x, y, k);
+        }
+        else {
+            int x, y; cin >> x >> y;
+            cout << st.query(x, y) << '\n';
+            // for (int i = 0; i < n; ++i) {
+            //     cout << st.query(i + 1, i + 1) << ' ';
+            // }
+            // cout << '\n';
+        }
     }
 } 
 
-int main() {
+signed main() {
     
     __BUFF__
 
@@ -108,4 +166,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

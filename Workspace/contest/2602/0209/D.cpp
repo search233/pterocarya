@@ -13,63 +13,99 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
+using i128 = __int128_t;
+
+// 输出重载
+ostream& operator<<(ostream& os, i128 x) {
+    if (x == 0) {
+        os << '0';
+        return os;
+    }
+    if (x < 0) {
+        os << '-';
+        x = -x;
+    }
+    string s;
+    while (x > 0) {
+        int digit = (int)(x % 10);
+        s.push_back('0' + digit);
+        x /= 10;
+    }
+    reverse(s.begin(), s.end());
+    os << s;
+    return os;
+}
+
+// 输入重载
+istream& operator>>(istream& is, i128& x) {
+    string s;
+    is >> s;
+    x = 0;
+    bool neg = false;
+    int i = 0;
+    if (s[0] == '-') {
+        neg = true;
+        i = 1;
+    }
+    for (; i < (int)s.size(); ++i) {
+        x = x * 10 + (s[i] - '0');
+    }
+    if (neg) x = -x;
+    return is;
+}
+
+i128 exgcd(i128 a, i128 b, i128 &x, i128 &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a; // gcd(a, 0) = a
+    }
+    i128 x1, y1;
+    i128 g = exgcd(b, a % b, x1, y1);
+    // 回溯更新系数
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
+}
+
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    i128 x, a, s;
+    cin >> x >> a >> s;
 
-    vector<vector<int>>  e(n + 1);
+    i128 c10, c20;
+    i128 g = exgcd(a, s, c10, c20);
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+    if (x % g) {
+        cout << "No\n";
+        return;
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    c10 *= x / g;
+    c20 *= x / g;
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+    i128 mx = LLONG_MAX;
+    i128 c22 = -1, c12 = -1;
+    i128 t = (c20 - c10) * g / (a + s);
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
+    for (i128 tt : {t - 1, t, t + 1}) {
+        i128 c11 = c10 + s * tt / g;
+        i128 c21 = c20 - a * tt / g;
 
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
+        if (c11 >= 0 && c21 >= 0) {
+            if (max(c11, c21) < mx) {
+                mx = max(c11, c21);
+                c12 = c11;
+                c22 = c21;
             }
         }
-    };
-
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+    if (c22 >= 0 && c12 >= 0) {
+        cout << "Yes\n";
+        cout << c12 << ' ' << c22 << '\n';
+    }
+    else {
+        cout << "No\n";
     }
 } 
 
@@ -78,7 +114,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +144,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

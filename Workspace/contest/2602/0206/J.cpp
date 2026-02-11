@@ -28,43 +28,38 @@ void solve() {
     }
 
     vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+    map<int, deque<arr2>> mp;
+    for (int i = 1; i <= n; ++i) {
+        mp[e[i].size()].push_back({i, 0});
+    }
 
     int dfn = 1;
     vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
 
+    auto f = [&](int SZ, deque<arr2> qu) -> void {
         while (!qu.empty()) {
             auto [u, d] = qu.front();
-            qu.pop();
+            qu.pop_front();
 
             for (auto v : e[u]) {
                 if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
+                if (e[v].size() < SZ) {
+                    if (ans[v] == -1) ans[v] = d + 1;
+
+                    ans[v] = min(d + 1, ans[v]);
+                    qu.push_back({v, d + 1});
                     vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
                 }
             }
         }
     };
 
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
+    for (auto& [i, qu] : views::reverse(mp)) {
+        for (auto& j : qu) {
+            vis[j[0]] = dfn;
+        }
+        f(i, qu);
         ++dfn;
     }
 

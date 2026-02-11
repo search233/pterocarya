@@ -14,63 +14,21 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>>  e(n + 1);
-
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
-    }
-
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
-        }
-    };
-
+    int n; cin >> n;
+    vector<ll> a(n + 1);
 
     for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+        cin >> a[i];
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+    ll ans = max(a[1] * (n - 1) + a[n], a[n] * (n - 1) + a[1]);
+    ll sum = a[1] + a[n];
+
+    for (int i = 2; i < n; ++i) {
+        ans = max(ans, sum + a[i] * (n - 2));
     }
+
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -78,7 +36,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +66,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

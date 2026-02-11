@@ -13,64 +13,34 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
+int dx[4] = { 1, -1,  0,  0};
+int dy[4] = { 0,  0,  1, -1};
+
 void solve() {
     int n, m;
     cin >> n >> m;
 
-    vector<vector<int>>  e(n + 1);
+    vector<string> s(n + 2);
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
-    }
-
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
+    int cnt[2] = {0};
+    for (int i = 1; i <= n; ++i) {
+        cin >> s[i];
+        s[i] = " " + s[i] + " ";
+        for (int j = 1; j <= m; ++j) {
+            ++cnt[s[i][j] - '0'];
         }
-    };
-
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
     }
 
     for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+        for (int j = 1; j <= m; ++j) {
+            if (cnt[s[i][j] - '0'] == 1) {
+                cout << 'N';
+            }
+            else cout << 'Y';
+        }
+        cout << '\n';
     }
+
 } 
 
 int main() {
@@ -78,7 +48,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +78,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/
