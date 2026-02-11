@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/1908/A
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -13,64 +11,62 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-void solve() {
-    int n, m;
-    cin >> n >> m;
+struct BIT {
+    #define lowbit(x) (x & (-x))
 
-    vector<vector<int>>  e(n + 1);
+    int n;
+    vector<int> tree;
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+    BIT (int n) {
+        this->n = n;
+        tree.resize(n + 1);
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
+    void add(int x, int a) {
+        for (int i = x; i <= n; i += lowbit(i)) {
+            tree[i] += a;
         }
-    };
-
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+    int sum(int x) {
+        int res = 0;
+        for (int i = x; i; i -= lowbit(i)) {
+            res += tree[i];
+        }
+        return res;
     }
+
+    int rangeSum(int l, int r) {
+        return sum(r) - sum(l - 1);
+    }
+};
+
+
+void solve() {
+    int n; cin >> n;
+    vector<int> a(n);
+
+    map<int, int> mp;
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        mp[a[i]] = 0;
+    }
+
+    int cur = 1;
+    for (auto& [num, tag] : mp) {
+        tag = cur;
+        ++cur;
+    }
+
+    BIT bt(n);
+    ll ans = 0;
+    for (int i = 0; i < n; ++i) {
+        int num = mp[a[i]];
+        ans += bt.rangeSum(num + 1, n);
+        bt.add(num, 1);
+    }
+
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -108,4 +104,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

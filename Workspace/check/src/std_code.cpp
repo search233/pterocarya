@@ -1,75 +1,114 @@
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
+
 #include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
 using namespace std;
 using ll = long long;
-const ll mod = 998244353;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
 
-vector<ll> f(1e6 + 10, 1), inv(1e6 + 10, 1);
+void solve() {
+    int n, m;
+    cin >> n >> m;
 
-ll qpow(ll a,ll b){
-	ll res = 1;
-	while(b){
-		if(b&1)
-			res = res * a % mod;
-		a = a * a % mod;
-		b >>= 1;
-	}
-	return res;
+    vector<vector<int>>  e(n + 1);
+
+    for (int i = 0; i < m; ++i) {
+        int u, v;
+        cin >> u >> v;
+
+        e[u].push_back(v);
+        e[v].push_back(u);
+    }
+
+    vector<int> ans(n + 1, -1);
+    vector<int> id(n + 1);
+    for (int i = 0; i <= n; ++i) id[i] = i;
+
+    sort(id.begin() + 1, id.end(), [&]
+    (int x, int y) -> bool {
+        return e[x].size() < e[y].size();
+    });
+
+    int dfn = 1;
+    vector<int> vis(n + 1);
+    
+    auto f = [&](int u) -> void {
+        queue<arr2> qu;
+        qu.push({u, 0});
+        int SZ = e[u].size();
+        vis[u] = dfn;
+
+        while (!qu.empty()) {
+            auto [u, d] = qu.front();
+            qu.pop();
+
+            for (auto v : e[u]) {
+                if (vis[v] == dfn) continue;
+
+                if (e[v].size() < SZ) {
+                    if (ans[v] == -1) {
+                        ans[v] = d + 1;
+                    }
+
+                    ans[v] = min(ans[v], d + 1);
+                    vis[v] = dfn;
+                    qu.push({v, d + 1});
+                }
+            }
+        }
+    };
+
+
+    for (int i = 1; i <= n; ++i) {
+        f(id[i]);
+        ++dfn;
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        cout << ans[i] << " \n"[i == n];
+    }
+} 
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
 }
+/*
+┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
+│Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│
+└───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
+│~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
+│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
+│ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │              
+├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐    
+│ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
+├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐
+│Ctrl │Win │Alt │         Space         │Alt │ Fn │Menu│Ctrl│ │ ← │ ↓ │ → │
+└─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘
 
-ll C(ll n,ll m){
-	if(n<m)
-		return 0;
-	return f[n] * inv[m] % mod * inv[n - m] % mod;
-}
 
-void solve()
-{
-	ll n; cin >> n;
-	vector<ll> a(n + 1, 0);
-	for(auto &i : a){
-		cin >> i;
-	}
+  /\_/\
+ (= ._.)
+ / >  \>
 
-	ll maxn = 0;
-	for (ll i = 1; i <= n;i++){
-		maxn = max(maxn, a[i]);
-	}
-	ll cnt = 0;
-	for (ll i = 1; i <= n;i++){
-		if(a[i]<maxn){
-			a[0] -= maxn - 1 - a[i];
-			a[i] = maxn - 1;
-			cnt++;
-		}
-	}
-	// cout << cnt << ' ' << a[0] << endl;
-	if(a[0]<0){
-		return cout << 0 << endl, void();
-	}
-	if(cnt<=a[0]){
-		return cout << f[n] << endl, void();
-	}
-	// cout << n - cnt << ' ' << cnt - a[0] << ' ';
-	cout << f[n - cnt] * f[cnt] % mod * C(n - cnt + a[0], a[0]) % mod << endl;
-}
-
-int main()
-{
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-	cout.tie(0);
-
-	for (ll i = 1; i <= 1e6;i++){
-		f[i] = f[i - 1] * i % mod;
-		inv[i] = qpow(f[i], mod - 2);
-	}
-
-	ll _ = 1;
-	cin >> _;
-	while (_--)
-	{
-		solve();
-	}
-
-	return 0;
-}
+*/ 

@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2191/D1
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -14,63 +12,37 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int n; cin >> n;
+    string s; cin >> s;
+    s = ' ' + s;
 
-    vector<vector<int>>  e(n + 1);
+    vector<int> cnt(n + 1);
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+    for (int i = 1; i <= n; ++i) {
+        cnt[i] = cnt[i - 1];
+        if (s[i] == '(') ++cnt[i];
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    int ans = -1;
+    int l = 1, r = 1;
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+    while (r < n) {
+        while(l <= n && s[l] == '(') ++l;
+        if (l > n) break;
+        // l -> )
+        // r -> (
+        r = l;
+        while (r <= n && s[r] == ')') ++r;
+        if (r > n) break;
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
+        if (cnt[n] - cnt[r] >= r - l) {
+            ans = max(ans, n - (r - l) * 2);
         }
-    };
 
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+        ++l;
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -78,7 +50,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +80,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

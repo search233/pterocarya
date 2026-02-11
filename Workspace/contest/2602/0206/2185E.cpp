@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2185/E
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -14,62 +12,60 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int n, m, k;
+    cin >> n >> m >> k;
 
-    vector<vector<int>>  e(n + 1);
+    vector<int> a(n), b(m);
+    string s;
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
 
     for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+        cin >> b[i];
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    cin >> s;
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+    ranges::sort(a);
+    ranges::sort(b);
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
+    vector<arr2> ddis(n + 1);
+    map<int, set<int>> mp;
+
+    for (int i = 0; i < n; ++i) {
+        int p = lower_bound(b.begin(), b.end(), a[i]) - b.begin();
+        if (p != m) {
+            mp[b[p] - a[i]].insert(i);
+            ddis[i][1] = b[p] - a[i];
+        }
+        if (p != 0) {
+            mp[b[p - 1] - a[i]].insert(i);
+            ddis[i][0] = b[p - 1] - a[i];
+        }
+    }
+
+    int dis = 0, ans = n;
     
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
+    for (int i = 0; i < k; ++i) {
+        if (s[i] == 'L') --dis;
+        else ++dis;
 
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
+        if (mp.count(dis)) {
+            ans -= mp[dis].size();
+            for (auto& i : mp[dis]) {
+                if (mp.count(ddis[i][dis < 0])) {
+                    mp[ddis[i][dis < 0]].erase(i);
+                }
 
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
+                if (mp[ddis[i][dis < 0]].empty()) {
+                    mp.erase(ddis[i][dis < 0]);
                 }
             }
+            mp.erase(dis);
         }
-    };
 
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
-    }
-
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+        cout << ans << " \n"[i == k - 1];
     }
 } 
 
@@ -78,7 +74,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +104,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

@@ -12,65 +12,85 @@ using ull = uint64_t;
 using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
+const ll MOD = 998244353;
+
+ll inv;
+int mod(ll num) {
+    num %= MOD;
+    if (num < 0) num += MOD;
+    return num;
+}
+
+
+ll qpow(ll a, ll b) {
+    ll ans = 1;
+    ll fac = a;
+
+    while (b) {
+        if (b & 1) {
+            ans = mod(ans * fac);
+        }
+
+        b >>= 1ll;
+        fac = mod(fac * fac);
+    }
+    
+    return ans;
+}
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int c; cin >> c;
+    vector<ll> p(8);
 
-    vector<vector<int>>  e(n + 1);
-
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+    for (int i = 1; i <= 7; ++i) {
+        cin >> p[i];
+        p[i] = mod(p[i] * inv);
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    vector<vector<ll>> num(10, vector<ll>(8));
+    //           1  2  3  4  5  6  7
+    num[0] = {1, 1, 1, 1, 0, 1, 1, 1};
+    num[1] = {1, 0, 0, 1, 0, 0, 1, 0};
+    num[2] = {1, 1, 0, 1, 1, 1, 0, 1};
+    num[3] = {1, 1, 0, 1, 1, 0, 1, 1};
+    num[4] = {1, 0, 1, 1, 1, 0, 1, 0};
+    num[5] = {1, 1, 1, 0, 1, 0, 1, 1};
+    num[6] = {1, 1, 1, 0, 1, 1, 1, 1};
+    num[7] = {1, 1, 0, 1, 0, 0, 1, 0};
+    num[8] = {1, 1, 1, 1, 1, 1, 1, 1};
+    num[9] = {1, 1, 1, 1, 1, 0, 1, 1};
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
+    for (int i = 0; i <= 9; ++i) {
+        for (int j = 1; j <= 7; ++j) {
+            ll pp = p[j];
+            if (num[i][j] == 0) pp = mod(1 - pp + MOD);
+            num[i][0] = mod(num[i][0] * pp);
         }
+    }
+
+    auto fac = [&](int x) -> ll {
+        ll ans = 1;
+        int len = 0;
+        do { 
+            ++len;
+            ans = mod(ans * num[x % 10][0]);
+            x /= 10;
+        } while (x);
+
+        for (int i = 0; i < 4 - len; ++i) {
+            ans = mod(ans * num[0][0]);
+        }
+
+        return ans;
     };
 
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+    ll ans = 0;
+    for (int a = 0; a <= c; ++a) {
+        int b = c - a;
+        ans = mod(mod(fac(a) * fac(b)) + ans);
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -78,7 +98,8 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
+    inv = qpow(100, MOD - 2);
 
     while (_--) {
         solve();
@@ -108,4 +129,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

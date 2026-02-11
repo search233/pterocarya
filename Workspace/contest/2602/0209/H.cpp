@@ -10,67 +10,87 @@ using ll = long long;
 using uint = uint32_t;
 using ull = uint64_t;
 using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
+using arr3 = array<ll, 3>;
 const double PI = acos(-1.0);
 
+int dx[13] = {0, -2, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1 ,2};
+int dy[13] = {0, 0,  -1,  0,  1, -2, -1, 1, 2, -1, 0, 1, 0};
+
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    int n, m, q;
+    cin >> n >> m >> q;
 
-    vector<vector<int>>  e(n + 1);
-
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
-    }
-
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
+    arr3 mxp = {0, 0, 0};
+    vector a(n + 2, vector<ll> (m + 2));
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
+            cin >> a[i][j];
+            if (a[i][j] > mxp[2]) {
+                mxp[0] = i;
+                mxp[1] = j;
+                mxp[2] = a[i][j];
             }
         }
+    }
+
+    auto f = [&](int x, int y) -> bool {
+        if (x < 1 || x > n || y < 1 || y > m) {
+            return false;
+        }
+        return true;
     };
 
-
     for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+        for (int j = 1; j <= m; ++j) {
+            ll sum = 0;
+            for (int k = 0; k < 13; ++k) {
+                int xx = i + dx[k];
+                int yy = j + dy[k];
+                if (f(xx, yy)) {
+                    sum += a[xx][yy];
+                }
+            }
+            if (sum > mxp[2]) {
+                mxp[0] = i;
+                mxp[1] = j;
+                mxp[2] = sum;
+                // cout << 1 << ' ' <<  i << ' ' << j << '\n';
+            }
+        }
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+    for (int i = 0; i < q; ++i) {
+        int x, y;
+        ll z;
+        cin >> x >> y >> z;
+
+        a[x][y] += z;
+
+        for (int k = 0; k < 13; ++k) {
+            int xx = x - dx[k];
+            int yy = y - dy[k];
+            ll sum = 0;
+            if (!f(xx, yy)) continue;
+
+            for (int k = 0; k < 13; ++k) {
+                int xxx = xx + dx[k];
+                int yyy = yy + dy[k];
+                if (f(xxx, yyy)) {
+                    sum += a[xxx][yyy];
+                }
+            }
+            if (sum > mxp[2]) {
+                mxp[0] = xx;
+                mxp[1] = yy;
+                mxp[2] = sum;
+            // cout <<2 << ' ' <<  x << ' ' << y << '\n';
+            }
+        }
+
+        cout << mxp[0] << ' ' << mxp[1] << '\n';
     }
+
+
 } 
 
 int main() {
@@ -108,4 +128,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

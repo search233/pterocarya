@@ -13,63 +13,117 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
+int dx[4] = {1, -1, 0, 0};
+int dy[4] = {0, 0, 1, -1};
+
 void solve() {
     int n, m;
     cin >> n >> m;
 
-    vector<vector<int>>  e(n + 1);
+    vector<string> s(n + 1);
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+    for (int i = 1; i <= n; ++i) {
+        cin >> s[i];
+        s[i] = ' ' + s[i] + ' ';
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    vector a(n + 2, vector<int> (m + 2));
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+    vector<arr2> p1;
+    vector<arr2> p2;
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= m; ++j) {
+            a[i][j] = s[i][j] - '0';
+            if (a[i][j] == 1) p1.push_back({i, j});
+            else if (a[i][j] == 2) p2.push_back({i, j});
+        }
+    }
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
+    vector vis(n + 2, vector<int> (m + 2));
+
+    auto f = [&](arr2 p) -> bool {
+        if (p[0] > n || p[0] < 1 || p[1] > m || p[1] < 1) {
+            return false;
+        }
+        if (vis[p[0]][p[1]] != 0) return false;
+        return true;
+    };
     
-    auto f = [&](int u) -> void {
+    auto ck = [&](arr2 p1, arr2 p2) -> bool {
         queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
+        qu.push(p1);
+        vis[p1[0]][p1[1]] = 1;
 
         while (!qu.empty()) {
-            auto [u, d] = qu.front();
+            int x = qu.front()[0];
+            int y = qu.front()[1];
             qu.pop();
 
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
+            for (int i = 0; i < 4; ++i) {
+                arr2 p = {x + dx[i], y + dy[i]};
+                if (p == p2) return true;
+
+                if (f(p) && vis[x + dx[i]][y + dy[i]] == 0) {
+                    qu.push(p);
+                    vis[p[0]][p[1]] = 1; 
                 }
             }
         }
+
+        return false;
     };
 
+    auto find = [&](arr2 p1, arr2 p2) -> bool {
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= m; ++j) {
+                vis[i][j] = 0;
+            }
+        }
 
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+        vector pre(n + 2, vector<arr2> (m + 2, {-1, -1}));
+        queue<arr2> qu;
+        qu.push(p1);
+        pre[p1[0]][p1[1]] = p1;
+
+        while (!qu.empty()) {
+            int x = qu.front()[0];
+            int y = qu.front()[1];
+
+            if (qu.front() == p2) {
+                while (!(x == p1[0] && y == p1[1])) {
+                    vis[x][y] = 1;
+                    x = pre[x][y][0];
+                    y = pre[x][y][1];
+                }
+                vis[x][y] = 1;
+                return true;
+            }
+
+            qu.pop();
+
+            for (int i = 0; i < 4; ++i) {
+                int xx = x + dx[i];
+                int yy = y + dy[i];
+                arr2 p = {xx, yy};
+
+                if (f(p) && pre[xx][yy][0] == -1) {
+                    qu.push(p);
+                    pre[xx][yy] = {x, y};
+                }
+            }
+        }
+
+        return false;
+    };
+
+    if (find(p1[0], p1[1]) && ck(p2[0], p2[1])) {
+        cout << "YES\n";
     }
-
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+    else if (find(p2[0], p2[1]) && ck(p1[0], p1[1])) {
+        cout << "YES\n";
+    }
+    else {
+        cout << "NO\n";
     }
 } 
 
@@ -78,7 +132,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +162,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

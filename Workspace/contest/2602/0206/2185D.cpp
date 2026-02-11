@@ -1,6 +1,4 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
+//https://codeforces.com/problemset/problem/2185/D
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -14,62 +12,42 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
+    ll n, m, h;
+    cin >> n >> m >> h;
 
-    vector<vector<int>>  e(n + 1);
+    vector<ll> a(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+    }
 
+    vector<arr2> s(n + 1);
+
+    int tag = -1;
     for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
+        ll b, c;
+        cin >> b >> c;
 
-        e[u].push_back(v);
-        e[v].push_back(u);
-    }
-
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
+        if (s[b][1] <= tag) {
+            s[b][0] = 0;
         }
-    };
 
+        if (c + s[b][0] + a[b] <= h) {
+            s[b][0] += c;
+        }
+        else {
+            s[b][0] = 0;
+            tag = i;
+        }
 
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+        s[b][1] = i;
     }
 
     for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+        if (s[i][1] <= tag) {
+            s[i][0] = 0;
+        }
+
+        cout << a[i] + s[i][0] << " \n"[i == n];
     }
 } 
 
@@ -78,7 +56,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +86,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

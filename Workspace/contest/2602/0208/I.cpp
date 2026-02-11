@@ -13,72 +13,130 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-void solve() {
-    int n, m;
-    cin >> n >> m;
-
-    vector<vector<int>>  e(n + 1);
-
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+struct LB { // Linear Basis
+    using i64 = long long;
+    static const int BASE = 60;
+    i64 d[BASE]; 
+    int idx[BASE];
+    i64 path[BASE];
+     
+    LB() { 
+        memset(d, 0, sizeof d);
+        memset(idx, 0, sizeof idx);
+        memset(path, 0, sizeof path);
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
-
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
-
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
+    bool insert(i64 val, int id) {
+        i64 res = 0;
+        for (int i = BASE - 1; i >= 0; i--) {
+            if (val & (1ll << i)) {
+                if (!d[i]) {
+                    d[i] = val;
+                    idx[i] = id;
+                    path[i] = res;
+                    return true;
                 }
+                val ^= d[i];
+                res |= (1LL << i);
             }
         }
-    };
-
-
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+        return false;
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
+    // 返回：用哪些“基向量”表示了 val（用 bitmask 表示）
+    // 如果不能表示，返回 -1
+    i64 QueryMask(i64 x) {
+        i64 res = 0;
+        for (int i = BASE - 1; i >= 0; i--) {
+            if (x >> i & 1) {
+                if (!d[i]) return -1;
+                x ^= d[i];
+                res |= (1LL << i);    
+            }
+        }
+        return res;
     }
-} 
+
+    // 封装好的接口：
+    // 如果 val 可表示，返回选中的“原始下标集合”
+    // 如果不可表示，返回空 vector
+    vector<int> get_path(i64 val, int n) {
+        i64 mask = QueryMask(val);
+        if (mask == -1) return {}; // 表示不了
+
+        vector<int> vis(n + 1, 0);
+
+        // 展开基向量到原始下标
+        for (int i = 0; i < BASE; i++) {
+            if (mask >> i & 1) {
+                int id = idx[i];
+                vis[id] ^= 1;
+                mask ^= path[i];
+            }
+        }
+
+        vector<int> res;
+        for (int i = 1; i <= n; i++) {
+            if (vis[i]) res.push_back(i);
+        }
+        return res;
+    }
+};
+
+void solve() {
+    int n; cin >> n;
+    vector<int> a(n);
+
+    int s = 0;
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        s ^= a[i];
+    }
+
+    LB lb;
+    vector<int> b(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> b[i];
+        lb.insert(b[i] ^ a[i], i + 1);
+
+    }
+
+    if (s == 0) {
+        for (int i = 0; i < n; ++i) {
+            cout << a[i] << " \n"[i == n - 1];
+        }
+    }
+    else {
+        auto ans = lb.get_path(s, n);
+        if (ans.empty()) {
+            cout << "-1\n";
+        }
+        else {
+            int p = 0;
+            for (int i = 0; i < n; ++i) {
+                if (p < ans.size() && ans[p] == i + 1) {
+                    cout << b[ans[p] - 1];
+                    ++p;
+                }
+                else {
+                    cout << a[i];
+                }
+                cout << " ";
+            }
+            // for (int i = 0; i < ans.size(); ++i) {
+            //     cout << ans[i] << " ";
+            // }
+            cout << '\n';
+        }
+    }
+}
 
 int main() {
     
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +166,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/

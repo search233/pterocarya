@@ -13,64 +13,58 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-void solve() {
-    int n, m;
-    cin >> n >> m;
 
-    vector<vector<int>>  e(n + 1);
+ll qpow(ll a, ll b) {
+    ll ans = 1;
+    ll fac = a;
+    while (b) {
+        if (b & 1) {
+            ans *= fac;
+        }
 
-    for (int i = 0; i < m; ++i) {
-        int u, v;
-        cin >> u >> v;
-
-        e[u].push_back(v);
-        e[v].push_back(u);
+        b >>= 1;
+        fac *= fac;
     }
 
-    vector<int> ans(n + 1, -1);
-    vector<int> id(n + 1);
-    for (int i = 0; i <= n; ++i) id[i] = i;
+    return ans;
+}
 
-    sort(id.begin() + 1, id.end(), [&]
-    (int x, int y) -> bool {
-        return e[x].size() < e[y].size();
-    });
+void solve() {
+    ll l, r;
+    cin >> l >> r;
 
-    int dfn = 1;
-    vector<int> vis(n + 1);
-    
-    auto f = [&](int u) -> void {
-        queue<arr2> qu;
-        qu.push({u, 0});
-        int SZ = e[u].size();
-        vis[u] = dfn;
-
-        while (!qu.empty()) {
-            auto [u, d] = qu.front();
-            qu.pop();
-
-            for (auto v : e[u]) {
-                if (vis[v] == dfn) continue;
-                if (e[v].size() < SZ && (ans[v] == -1 || ans[v] >= d + 1)) {
-                    ans[v] = d + 1;
-                    qu.push({v, d + 1});
-                    vis[v] = dfn;
-                    // cout << "dfn = " << dfn << '\n';
-                    // cout << "v = " << v << " d = " << d << '\n';
-                }
-            }
+    auto count = [](ll num) -> int {
+        int cnt = 0;
+        while (num) {
+            ++cnt;
+            num /= 10;
         }
+        return cnt;
     };
 
+    auto rev = [](ll num) -> ll {
+        ll ans = 0;
+        while (num) {
+            ans = ans * 10 + (num % 10);
+            num /= 10;
+        }
+        return ans;
+    };INT_MAX
 
-    for (int i = 1; i <= n; ++i) {
-        f(id[i]);
-        ++dfn;
+    ll ans = max(rev(l), rev(r));
+    int upbd = count(r) - 1;
+    for (int i = upbd; i >= 0; --i) {
+        ll bk = qpow(10, i);
+        ll ft = (r - bk + 1) / bk;
+
+        if (ft * bk + bk - 1 < l) continue;
+
+
+        // cout << i  << ' ' << ft << ' ' << ft * bk + bk - 1 << '\n';
+        ans = max(ans, rev(ft * bk + bk - 1));
     }
 
-    for (int i = 1; i <= n; ++i) {
-        cout << ans[i] << " \n"[i == n];
-    }
+    cout << ans << '\n';
 } 
 
 int main() {
@@ -78,7 +72,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -108,4 +102,4 @@ int main() {
  (= ._.)
  / >  \>
 
-*/ 
+*/
