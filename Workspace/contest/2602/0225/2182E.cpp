@@ -1,0 +1,91 @@
+//https://codeforces.com/problemset/problem/2182/E
+
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+void solve() {
+    ll n, m, k;
+    cin >> n >> m >> k;
+
+    vector<ll> a(m);
+    multiset<ll> sta;
+    for (auto& i : a) {
+        cin >> i;
+        sta.insert(i);
+    }
+
+    vector<arr2> x(n);
+    for (auto& it : x) {
+        cin >> it[0];
+        ll y, z;
+        cin >> y >> z;
+        it[1] = z - y;
+        k -= y;
+    }
+
+    ranges::sort(x, []
+    (arr2 a, arr2 b) -> bool {
+        return a[1] > b[1];
+    });
+    
+    for (int i = 0; i < n; ++i) {
+        auto it = sta.lower_bound(x[i][0]);
+        if (it != sta.end()) {
+            x[i][1] = 0;
+            sta.erase(it);
+        }
+    }
+
+
+    ranges::sort(x, []
+    (arr2 a, arr2 b) -> bool {
+        return a[1] < b[1];
+    });
+
+    int ans = 0;
+    for (int i = 0; i < n; ++i) {
+        if (x[i][1] <= k) {
+            ++ans;
+            k -= x[i][1];
+        }
+        else {
+            break;
+        }
+    }
+
+    cout << ans << '\n';
+}  
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
+*/
