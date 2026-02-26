@@ -13,150 +13,78 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-struct PArray {
+const ll MOD = 998244353;
+const ll MAXN = 1000000; // 按题目需要设最大值
 
-    struct Node {
-        int l = 0, r = 0;
-        int val = 0;
-    };
+ll mod(ll num) {
+    num %= MOD;
+    if (num < 0) num += MOD;
+    return num;
+}
 
-    vector<Node> tr;
-    int n;
-
-    PArray(int n) : n(n) {
-        tr.push_back(Node()); // 0号空节点
+ll qpow(ll a, ll b) {
+    ll ans = 1;
+    while (b) {
+        if (b & 1) ans = mod(ans * a);
+        a = mod(a * a) ;
+        b >>= 1;
     }
+    return ans;
+}
 
-    int clone(int x) {
-        tr.push_back(tr[x]);
-        return tr.size() - 1;
-    }
+struct Comb {
+    int N;
+    vector<long long> fac, inv;
 
-    int build(int l, int r, const vector<int>& a) {
-        int node = tr.size();
-        tr.push_back(Node());
-
-        if (l == r) {
-            tr[node].val = a[l];
-            return node;
+    // 构造函数：预处理到 max_n
+    Comb(int max_n) : N(max_n) {
+        fac.resize(N + 1);
+        inv.resize(N + 1);
+        fac[0] = 1;
+        for (int i = 1; i <= N; ++i) {
+            fac[i] = mod(fac[i - 1] * i);
         }
 
-        int mid = (l + r) >> 1;
-        tr[node].l = build(l, mid, a);
-        tr[node].r = build(mid+1, r, a);
-        return node;
-    }
-
-    int update(int pre, int l, int r, int pos, int val) {
-        int node = clone(pre);
-
-        if (l == r) {
-            tr[node].val = val;
-            return node;
+        inv[N] = qpow(fac[N], MOD - 2);
+        for (int i = N; i >= 1; --i) {
+            inv[i - 1] = mod(inv[i] * i);
         }
-
-        int mid = (l + r) >> 1;
-
-        if (pos <= mid)
-            tr[node].l = update(tr[pre].l, l, mid, pos, val);
-        else
-            tr[node].r = update(tr[pre].r, mid+1, r, pos, val);
-
-        return node;
     }
 
-    int query(int node, int l, int r, int pos) {
-        if (l == r) return tr[node].val;
-
-        int mid = (l + r) >> 1;
-
-        if (pos <= mid)
-            return query(tr[node].l, l, mid, pos);
-        else
-            return query(tr[node].r, mid+1, r, pos);
+    // 组合数 C(n, k)
+    ll C(int n, int k) const {
+        if (k < 0 || k > n || n < 0) return 0;
+        return mod(mod(fac[n] * inv[k]) * inv[n - k]);
     }
-};
-
-struct PDSU {
-
-    int n;
-
-    PArray fa, sz;
-
-    vector<int> root_fa;
-    vector<int> root_sz;
-
-    PDSU(int n)
-        : n(n), fa(n), sz(n)
-    {
-        vector<int> init_fa(n+1);
-        vector<int> init_sz(n+1, 1);
-
-        for (int i = 1; i <= n; i++)
-            init_fa[i] = i;
-
-        root_fa.push_back(fa.build(1,n,init_fa));
-        root_sz.push_back(sz.build(1,n,init_sz));
-    }
-
-    // ===== 查找祖先（无路径压缩）=====
-    int find(int root, int x) {
-        int f = fa.query(root,1,n,x);
-        if (f == x) return x;
-        return find(root, f);
-    }
-
-    // ===== 合并 =====
-    void unite(int version, int x, int y) {
-
-        int fa_root = root_fa[version];
-        int sz_root = root_sz[version];
-
-        x = find(fa_root, x);
-        y = find(fa_root, y);
-
-        if (x == y) {
-            root_fa.push_back(fa_root);
-            root_sz.push_back(sz_root);
-            return;
-        }
-
-        int sx = sz.query(sz_root,1,n,x);
-        int sy = sz.query(sz_root,1,n,y);
-
-        if (sx < sy) swap(x,y);
-
-        // y 挂到 x
-        int new_fa =
-            fa.update(fa_root,1,n,y,x);
-
-        int new_sz =
-            sz.update(sz_root,1,n,x,sx+sy);
-
-        root_fa.push_back(new_fa);
-        root_sz.push_back(new_sz);
-    }
-
-    // ===== 是否连通 =====
-    bool same(int version, int x, int y) {
-        int root = root_fa[version];
-        return find(root,x) == find(root,y);
-    }
-};
+}comb(MAXN);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n);
+    ll n, x, t;
+    cin >> n >> x >> t;
 
-    //初始化
-    PDSU dsu(n);
-    //hebing
-    int version,  x,  y;
-    dsu.unite(version, x, y);
+    ll k = t + 1;
 
-    //查询 在该版本是否联通
-    dsu.same(version, x, y);
+auto cal = [&](int l, int r) -> ll {
+    if (l > 0 && x < l) return 0;
+    if (r > 0 && n - x < r) return 0;
+    if (l == 0 && x != 0) return 0;
+    if (r == 0 && n - x != 0) return 0;
 
+    ll fac1 = 1, fac0 = 1;
+    if (l > 0) fac1 = comb.C(x - 1, l - 1);
+    if (r > 0) fac0 = comb.C(n - x - 1, r - 1);
+
+    return mod(fac1 * fac0);
+};
+
+    int cntl = (k + 1) / 2;
+    int cntr = k / 2;
+
+    ll sum = 0;
+    sum = mod(sum + cal(cntl, cntr));
+    sum = mod(sum + cal(cntr, cntl));
+
+    cout << sum << '\n';
 } 
 
 int main() {
@@ -164,7 +92,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();
@@ -194,6 +122,4 @@ int main() {
  (= ._.)
  / >  \>
 
-
-
-*/ 
+*/

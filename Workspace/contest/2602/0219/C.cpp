@@ -13,149 +13,123 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-struct PArray {
+struct SegTree {
+    #define ls (rt << 1)
+    #define rs (rt << 1 | 1)
 
     struct Node {
-        int l = 0, r = 0;
-        int val = 0;
+        int l, r;      // 当前节点表示的区间 [l, r]
+
+        // ====== 要维护的信息 ======
+        // int val;       
+        // int lazy;
+        int f;
+        int cost;
+        // ==================================
+
+        Node(): l(0), r(0) ,f(0), cost(1) {}
     };
 
-    vector<Node> tr;
     int n;
+    vector<Node> tree;
 
-    PArray(int n) : n(n) {
-        tr.push_back(Node()); // 0号空节点
-    }
+    SegTree(const vector<int>& vec) {
+        int len = vec.size() - 1;
+        tree.assign(len << 2, Node());
 
-    int clone(int x) {
-        tr.push_back(tr[x]);
-        return tr.size() - 1;
-    }
+        auto build = [&](auto& build, int rt, int l, int r) -> void {
+            tree[rt].l = l;
+            tree[rt].r = r;
+            
+            if (l == r) {
+                // 初始化
+                return;
+            }
 
-    int build(int l, int r, const vector<int>& a) {
-        int node = tr.size();
-        tr.push_back(Node());
+            int mid = l + r >> 1;
+            build(build, ls, l, mid);
+            build(build, rs, mid + 1, r);
+            push_up(rt);
+        };
 
-        if (l == r) {
-            tr[node].val = a[l];
-            return node;
+        build(build, 1, 1, len);
+    } 
+
+    // 向上合并
+    void push_up(int rt) {
+        // ====== 合并左右区间信息 ======
+        if (tree[rt].f) {
+            tree[rt].cost = tree[ls].cost + tree[rs].cost;
         }
-
-        int mid = (l + r) >> 1;
-        tr[node].l = build(l, mid, a);
-        tr[node].r = build(mid+1, r, a);
-        return node;
+        // tree[rt].val = tree[ls].val + tree[rs].val;
+        // ==========================================
     }
 
-    int update(int pre, int l, int r, int pos, int val) {
-        int node = clone(pre);
+    // 下推懒标记：把当前节点的 lazy 影响传给子节点
+    // void push_down(int rt) {
+    //     if (tree[rt].lazy != 0 && tree[rt].l != tree[rt].r) {
+    //         // ====== lazy 下传 ======
+    //         // 区间加：
+    //         // tree[ls].lazy += tree[rt].lazy;
+    //         // tree[rs].lazy += tree[rt].lazy;
+    //         // ====================================
 
-        if (l == r) {
-            tr[node].val = val;
-            return node;
-        }
+    //         tree[rt].lazy = 0; // 清空当前节点懒标记
+    //     }
+    // }
 
-        int mid = (l + r) >> 1;
-
-        if (pos <= mid)
-            tr[node].l = update(tr[pre].l, l, mid, pos, val);
-        else
-            tr[node].r = update(tr[pre].r, mid+1, r, pos, val);
-
-        return node;
-    }
-
-    int query(int node, int l, int r, int pos) {
-        if (l == r) return tr[node].val;
-
-        int mid = (l + r) >> 1;
-
-        if (pos <= mid)
-            return query(tr[node].l, l, mid, pos);
-        else
-            return query(tr[node].r, mid+1, r, pos);
-    }
-};
-
-struct PDSU {
-
-    int n;
-
-    PArray fa, sz;
-
-    vector<int> root_fa;
-    vector<int> root_sz;
-
-    PDSU(int n)
-        : n(n), fa(n), sz(n)
-    {
-        vector<int> init_fa(n+1);
-        vector<int> init_sz(n+1, 1);
-
-        for (int i = 1; i <= n; i++)
-            init_fa[i] = i;
-
-        root_fa.push_back(fa.build(1,n,init_fa));
-        root_sz.push_back(sz.build(1,n,init_sz));
-    }
-
-    // ===== 查找祖先（无路径压缩）=====
-    int find(int root, int x) {
-        int f = fa.query(root,1,n,x);
-        if (f == x) return x;
-        return find(root, f);
-    }
-
-    // ===== 合并 =====
-    void unite(int version, int x, int y) {
-
-        int fa_root = root_fa[version];
-        int sz_root = root_sz[version];
-
-        x = find(fa_root, x);
-        y = find(fa_root, y);
-
-        if (x == y) {
-            root_fa.push_back(fa_root);
-            root_sz.push_back(sz_root);
+    // 区间修改：[L, R] 对区间做某种操作
+    void modify(int L, int R, int rt = 1) {
+        if (L <= tree[rt].l && tree[rt].r <= R) {
+            // ====== 整段覆盖时更新, 打标记 ======
+            tree[rt].f = 1;
+            tree[rt].cost = tree[ls].cost + tree[rs].cost;
+            // =========================================
             return;
         }
 
-        int sx = sz.query(sz_root,1,n,x);
-        int sy = sz.query(sz_root,1,n,y);
+        // push_down(rt);
 
-        if (sx < sy) swap(x,y);
+        int mid = (tree[rt].l + tree[rt].r) >> 1;
+        if (L <= mid) modify(L, R, ls);
+        if (R >  mid) modify(L, R, rs);
 
-        // y 挂到 x
-        int new_fa =
-            fa.update(fa_root,1,n,y,x);
-
-        int new_sz =
-            sz.update(sz_root,1,n,x,sx+sy);
-
-        root_fa.push_back(new_fa);
-        root_sz.push_back(new_sz);
+        push_up(rt);
     }
 
-    // ===== 是否连通 =====
-    bool same(int version, int x, int y) {
-        int root = root_fa[version];
-        return find(root,x) == find(root,y);
+    // 区间查询：[L, R] 查询区间信息
+    int query(int l, int r, int rt = 1) {
+        if (l <= tree[rt].l && tree[rt].r <= r) {
+            return tree[rt].cost;
+        }
+
+        // push_down(rt);
+        int mid = tree[rt].l + tree[rt].r >> 1;
+
+        int res = (!tree[rt].f);
+        if (r <= mid) return res + query(l, r, ls);
+        if (l > mid) return res + query(l, r, rs);
+
+        return res + query(l, r, ls) + query(l, r, rs);
     }
 };
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n);
+    vector<int> a(n + 1, 0);
+    SegTree st(a);
+    int op, l, r;
 
-    //初始化
-    PDSU dsu(n);
-    //hebing
-    int version,  x,  y;
-    dsu.unite(version, x, y);
+    for (int i = 0; i < n; ++i) {
+        cin >> op >> l >> r;
 
-    //查询 在该版本是否联通
-    dsu.same(version, x, y);
+        if (op == 1) {
+            st.modify(l, r);
+        }
+        else {
+            cout << st.query(l, r) << '\n';
+        }
+    }
 
 } 
 
@@ -194,6 +168,4 @@ int main() {
  (= ._.)
  / >  \>
 
-
-
-*/ 
+*/
