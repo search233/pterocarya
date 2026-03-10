@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2195/F
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -8,32 +8,103 @@ using ll = long long;
 using uint = uint32_t;
 using ull = uint64_t;
 using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
+using arr3 = array<ll, 3>;
 const double PI = acos(-1.0);
+const int INF = 1e9;
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
+    vector<arr3> a(n + 1);
 
     for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+        cin >> a[i][0] >> a[i][1] >> a[i][2];
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+    vector e(n + 1, vector<int>());
+    vector reve(n + 1, vector<int>());
+
+    auto con = [&](int u, int v) -> void {
+        if (a[u][2] < a[v][2]) {
+            e[v].push_back(u);
+            reve[u].push_back(v);
+        }
+        else if (a[u][2] > a[v][2]) {
+            e[u].push_back(v);
+            reve[v].push_back(u);
+        }
+    };
+
+    auto f = [&](int u, int v) -> void {
+        if (a[u][0] == a[v][0] && a[u][1] == a[v][1]) { // ai = aj bi = bj
+            con(u, v);
         }
         else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
+            ll aa = a[u][0] - a[v][0];
+            ll bb = a[u][1] - a[v][1];
+            ll cc = a[u][2] - a[v][2];
+            ll d = bb * bb - 4 * aa * cc;
+            if (d < 0) {// b^2 - 4ac
+                con(u, v);
+            }
         }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    };
+
+    for (int i = 1; i <= n; ++i) {
+        for (int j = i + 1; j <= n ; ++j) {
+            f(i, j);
+        }
     }
 
-    cout << cnt << '\n';
-} 
+    vector<int> dpl(n + 1), dpr(n + 1);
+    queue<int> qu;
+    vector<int> cnt(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cnt[i] = reve[i].size();
+        if (reve[i].empty()) {
+            qu.push(i);
+            dpl[i] = 1;
+        }
+    }
+
+    while (!qu.empty()) {
+        int u = qu.front();
+        qu.pop();
+
+        for (auto v : e[u]) {
+            dpl[v] = max(dpl[u] + 1, dpl[v]);
+            --cnt[v];
+            if (cnt[v] == 0) {
+                qu.push(v);
+            }
+        }
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        cnt[i] = e[i].size();
+        if (e[i].empty()) {
+            qu.push(i);
+            dpr[i] = 1;
+        }
+    }
+
+    while (!qu.empty()) {
+        int u = qu.front();
+        qu.pop();
+
+        for (auto v : reve[u]) {
+            dpr[v] = max(dpr[u] + 1, dpr[v]);
+            --cnt[v];
+            if (cnt[v] == 0) {
+                qu.push(v);
+            }
+        }
+    }
+
+
+    for (int i = 1; i <= n; ++i) {
+        cout << dpl[i] + dpr[i] - 1 << " \n"[i == n];
+    }
+}
 
 int main() {
     

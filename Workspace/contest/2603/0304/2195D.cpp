@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2195/D
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -13,26 +13,31 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
+    vector<ll> f(n + 1);
+    vector<ll> a(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cin >> f[i];
+    }
+
+    for (int i = 2; i < n; ++i) {
+        a[i] = (f[i + 1] + f[i - 1] - 2 * f[i]) / 2;
+    }
+
+    ll sum = 0;
+    for (int i = 2; i < n; ++i) {
+        sum += a[i] * (n - i);
+    }
+    a[1] = (f[n] - sum) / (n - 1);
+    
+    sum = 0;
+    for (int i = 2; i < n; ++i) {
+        sum += a[i] * (i - 1);
+    }
+    a[n] = (f[1] - sum) / (n - 1);
 
     for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+        cout << a[i] << " \n"[i == n];
     }
-
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
-    }
-
-    cout << cnt << '\n';
 } 
 
 int main() {

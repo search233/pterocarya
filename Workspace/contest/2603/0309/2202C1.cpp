@@ -23,7 +23,7 @@ void solve() {
     arr2 tag = {a[1], a[1]};
     for (int i = 2; i <= n; ++i) {
         if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+            tag[1] = a[i];
         }
         else {
             tag[0] = tag[1] = a[i];

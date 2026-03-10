@@ -1,4 +1,6 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,27 +14,47 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    int n, m, k;
+    cin >> n >> m >> k;
+    vector<arr3> a;
+    vector b(n + 1, vector<int>(m + 1));
 
     for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+        for (int j = 1; j <= m; ++j) {
+            cin >> b[i][j];
+            a.push_back({b[i][j], i, j});
+        }
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    ranges::sort(a, []
+    (arr3 x, arr3 y) -> bool {
+        return x[0] > y[0];
+    });
+
+    int cnt = 0;
+    set<int> stx, sty;
+    for (auto [num, x, y] : a) {
+        if(stx.count(x) || sty.count(y)) continue;
+        stx.insert(x), sty.insert(y);
+        ++cnt;
+        if (cnt == k) break; 
     }
 
-    cout << cnt << '\n';
+    for (int i = 1; i <= n; ++i) {
+        if (stx.count(i)) continue;
+        int tag = 1;
+        for (int j = 1; j <= m; ++j) {
+            if (sty.count(j)) continue;
+            if (tag) {
+                tag = 0;
+                cout << b[i][j];
+            }
+            else {
+                cout << ' ' << b[i][j];
+            } 
+        }
+        cout << '\n';
+    }
 } 
 
 int main() {
@@ -40,7 +62,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

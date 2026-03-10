@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2192/C
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,27 +12,50 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    ll n, h, k;
+    cin >> n >> h >> k;
+
+    vector<ll> a(n + 1), pre(n + 1);
 
     for (int i = 1; i <= n; ++i) {
         cin >> a[i];
+        pre[i] = pre[i - 1] + a[i];
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    int temp = h / pre[n];
+    h %= pre[n];
+    ll ans = temp * n + max(temp - 1, 0) * k;
+    if (h == 0) {
+        cout << ans << '\n';
+        return;
+    }
+    else if (ans){
+        ans += k;
     }
 
-    cout << cnt << '\n';
+    int p = upper_bound(pre.begin() + 1, pre.end(), h) - pre.begin();
+    --p;
+    
+    ll mx = 0;
+    for (int i = p + 1; i <= n; ++i) {
+        mx = max(mx, a[i]);
+    }
+
+    // cout << mx << '\n';
+    temp = INT_MAX;
+    for (int i = 1; i <= p; ++i) {
+        if (a[i] >= mx) continue;
+        int pp = lower_bound(pre.begin() + 1, pre.end(), h - mx + a[i]) - pre.begin();
+        // if (pp < i) continue;
+        pp = max(pp, i); 
+        // cout << i << ' ' << pp << '\n';
+        temp = min(temp, pp);
+    }
+    p = lower_bound(pre.begin(), pre.end(), h) - pre.begin();
+    p = min(p, temp);
+
+    // cout << ans << ' ' << p << '\n';
+    cout << ans + p << '\n';
 } 
 
 int main() {

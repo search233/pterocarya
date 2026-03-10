@@ -1,4 +1,6 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -13,26 +15,54 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
+    vector p(2, vector<int> ());
+    vector<int> x3(2e6 + 100);
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
-    }
-
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+    set<int> st;
+    for (int i = 0; i < n; ++i) {
+        int x, y; cin >> x >> y;
+        if (y == 2) {
+            x3[x + 1e6] = 1;
         }
         else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+            p[y].push_back(x);
+        }        
     }
 
-    cout << cnt << '\n';
+    ranges::sort(p[0]);
+    p[0].erase(unique(p[0].begin(), p[0].end()), p[0].end());
+    ranges::sort(p[1]);
+    p[1].erase(unique(p[1].begin(), p[1].end()), p[1].end());
+
+    vector<arr2> ans;
+    for (auto x1 : p[0]) {
+        for (auto x2 : p[1]) {
+            int xx = x2 * 2 - x1 + 1e6;
+            if (xx >= 0 && xx < x3.size() && x3[xx] == 1) {
+                ans.push_back({x1, x2});
+            }
+        }
+    }
+
+    if (ans.empty()) {
+        cout << "-1";
+        return;
+    }
+
+
+    ranges::sort(ans, []
+        (arr2 a, arr2 b) -> bool {
+            if (b[1] != a[1]) {
+                return a[1] < b[1];
+            }
+            return a[0] < b[0];
+        });
+        
+    for (auto [x1, x2] : ans) {
+        cout << "[" << x1 << ", 0] ["
+             << x2 << ", 1] ["
+             << x2 * 2 - x1 << ", 2]\n";
+    }
 } 
 
 int main() {
@@ -40,7 +70,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

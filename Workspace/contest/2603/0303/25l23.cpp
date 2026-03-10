@@ -1,4 +1,6 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -13,34 +15,39 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
+    int h, m, s;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    auto cal = [](int h, int m, int s) -> int {
+        return h * 3600 + m * 60 + s;
+    };
+
+    vector<int> a(cal(23, 59, 59) + 2);
+    for (int i = 0; i < n; ++i) {
+        scanf("%d:%d:%d", &h, &m, &s);
+        // cout << h << ' ' << m << ' ' << s << ' ';
+        ++a[cal(h, m, s)];
+        scanf("%d:%d:%d", &h, &m, &s);
+        --a[cal(h, m, s) + 1];
+        // cout << h << ' ' << m << ' ' << s << '\n';
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    int ans = a[0];
+    for (int i = 1; i < a.size(); ++i) {
+        // if (a[i])
+        // cout << i << ' ' <<  a[i] << '\n';
+        a[i] += a[i - 1];
+        ans = max(ans, a[i]);
     }
 
-    cout << cnt << '\n';
+    cout << ans;
 } 
 
 int main() {
     
-    __BUFF__
+    // __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

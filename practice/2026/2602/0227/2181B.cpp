@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2181/B
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,27 +12,56 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    int n, m;
+    cin >> n >> m;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    priority_queue<int> a, b;
+    for (int i = 0; i < n; ++i) {
+        int num; cin >> num;
+        a.push(num);
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+    for (int i = 0; i < m; ++i) {
+        int num; cin >> num;
+        b.push(num);
+    }
+
+    int tag = 1;
+
+    // while (!a.empty()) {
+    //     cout << a.top() << ' ';
+    //     a.pop();
+    // }
+    while (!a.empty() && !b.empty()) {       
+
+        if (tag) {
+            if (b.top() <= a.top()) {
+                b.pop();
+            }
+            else {
+                b.push(b.top() - a.top());
+                b.pop();
+            }
         }
         else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
+            if (a.top() <= b.top()) {
+                a.pop();
+            }
+            else {
+                a.push(a.top() - b.top());
+                a.pop();
+            }
         }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+
+        tag ^= 1;
     }
 
-    cout << cnt << '\n';
+    if (a.empty()) {
+        cout << "Bob\n";
+    }
+    else {
+        cout << "Alice\n";
+    }
 } 
 
 int main() {

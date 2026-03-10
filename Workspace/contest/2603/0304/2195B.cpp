@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2195/B
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -15,24 +15,23 @@ void solve() {
     int n; cin >> n;
     vector<int> a(n + 1);
 
+    auto cal  = [](int num) -> int {
+        while (num % 2 == 0) {
+            num /= 2;
+        }
+        return num;
+    };
+
+    int tag = 1;
     for (int i = 1; i <= n; ++i) {
         cin >> a[i];
+        if (cal(i) != cal(a[i])) {
+            tag = 0;
+        }
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
-    }
-
-    cout << cnt << '\n';
+    if (tag) cout << "YES\n";
+    else cout << "NO\n";
 } 
 
 int main() {

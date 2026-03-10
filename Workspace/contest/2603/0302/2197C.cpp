@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2197/C
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -7,32 +7,43 @@ using namespace std;
 using ll = long long;
 using uint = uint32_t;
 using ull = uint64_t;
-using arr2 = array<int, 2>;
+using arr2 = array<ll, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    ll p, q; cin >> p >> q;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    auto f = [&](ll fac) -> arr2 {
+        return {fac * 2, fac * 3};
+    };
+
+    ll fac = p / 2;
+    arr2 dif = f(fac);
+    if (dif[1] > q) {
+        fac = q / 3;
+        dif = f(fac);
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    if (fac == 0) {
+        cout << "Alice\n";
+        return;
     }
 
-    cout << cnt << '\n';
+    dif[0] = p - dif[0];
+    dif[1] = q - dif[1];
+
+    if (dif[0] < dif[1]) {
+        cout << "Alice\n";
+        return;
+    }
+
+    if (dif[0] == dif[1] || dif[0] - dif[1] < fac) {
+        cout << "Bob\n";
+        return;
+    }
+    cout << "Alice\n";
+    // cout <<fac << ' ' << dif[0] << ' ' << dif[1] << '\n';
 } 
 
 int main() {
