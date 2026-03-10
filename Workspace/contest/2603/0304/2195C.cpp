@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2195/C
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -19,20 +19,33 @@ void solve() {
         cin >> a[i];
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
+    int ans = INT_MAX;
+    vector dp(n + 1, vector<int>(7));
+    for (int i = 1; i <= 6; ++i) {
+        dp[1][i] = (a[1] != i);
+        ans = min(ans, dp[1][i]);
+    }  
+
+    auto cal = [&](int i, int num) -> int {
+        int mn = INT_MAX;
+        for (int j = 1; j <= 6; ++j) {
+            if (j == num || j == 7 - num) {
+                continue;
+            }
+            mn = min(mn, dp[i - 1][j]);
+        }
+        return mn + (a[i] != num);
+    };
+
     for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+        ans = INT_MAX;
+        for (int num = 1; num <= 6; ++num) {
+            dp[i][num] = cal(i, num);
+            ans = min(ans, dp[i][num]);
         }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
     }
 
-    cout << cnt << '\n';
+    cout << ans << '\n';
 } 
 
 int main() {

@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2192/B
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -13,26 +13,32 @@ const double PI = acos(-1.0);
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
+    string s; cin >> s;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    vector p(2, vector<int>());    
+    for (int i = 0; i < n; ++i) {
+        p[s[i] - '0'].push_back(i + 1);
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+    auto print = [&](int num) -> void {
+        int len = p[num].size();
+        cout << len << '\n';
+        for (int i = 0; i < len; ++i) {
+            cout << p[num][i] << " \n"[i == len - 1];
         }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    };
+
+    if (p[1].size() % 2 == 0) {
+        print(1);
+        return;
     }
 
-    cout << cnt << '\n';
+    if (p[0].size() & 1) {
+        print(0);
+        return;
+    }
+    
+    cout << "-1\n";
 } 
 
 int main() {

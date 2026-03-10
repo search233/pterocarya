@@ -1,199 +1,114 @@
-//https://codeforces.com/problemset/problem/ /
-//https://atcoder.jp/contests/ /tasks/ /
-//https://www.luogu.com.cn/problem/
-
 #include <bits/stdc++.h>
-#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
-
 using namespace std;
-using ll = long long;
-using uint = uint32_t;
-using ull = uint64_t;
-using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
-const double PI = acos(-1.0);
-
-struct PArray {
-
-    struct Node {
-        int l = 0, r = 0;
-        int val = 0;
-    };
-
-    vector<Node> tr;
-    int n;
-
-    PArray(int n) : n(n) {
-        tr.push_back(Node()); // 0号空节点
-    }
-
-    int clone(int x) {
-        tr.push_back(tr[x]);
-        return tr.size() - 1;
-    }
-
-    int build(int l, int r, const vector<int>& a) {
-        int node = tr.size();
-        tr.push_back(Node());
-
-        if (l == r) {
-            tr[node].val = a[l];
-            return node;
-        }
-
-        int mid = (l + r) >> 1;
-        tr[node].l = build(l, mid, a);
-        tr[node].r = build(mid+1, r, a);
-        return node;
-    }
-
-    int update(int pre, int l, int r, int pos, int val) {
-        int node = clone(pre);
-
-        if (l == r) {
-            tr[node].val = val;
-            return node;
-        }
-
-        int mid = (l + r) >> 1;
-
-        if (pos <= mid)
-            tr[node].l = update(tr[pre].l, l, mid, pos, val);
-        else
-            tr[node].r = update(tr[pre].r, mid+1, r, pos, val);
-
-        return node;
-    }
-
-    int query(int node, int l, int r, int pos) {
-        if (l == r) return tr[node].val;
-
-        int mid = (l + r) >> 1;
-
-        if (pos <= mid)
-            return query(tr[node].l, l, mid, pos);
-        else
-            return query(tr[node].r, mid+1, r, pos);
-    }
-};
-
-struct PDSU {
-
-    int n;
-
-    PArray fa, sz;
-
-    vector<int> root_fa;
-    vector<int> root_sz;
-
-    PDSU(int n)
-        : n(n), fa(n), sz(n)
+ 
+#define ll long long int
+ 
+//<ans, ansWithOperationUsed, sum, maxDepth>
+array<ll, 4> func(ll par, ll child, vector<vector<ll>> &a, vector<ll> &v, vector<array<ll, 4>> &ans){
+    array<ll, 4> currAns = {0, 0, v[child], 0};
+ 
+    ll maxDepth = 0;
+    ll secondMaxDepth = 0;
+ 
+    ll maxAnsIncreaseWithOperationUsed = 0;
+ 
+    for (auto i:a[child])
     {
-        vector<int> init_fa(n+1);
-        vector<int> init_sz(n+1, 1);
-
-        for (int i = 1; i <= n; i++)
-            init_fa[i] = i;
-
-        root_fa.push_back(fa.build(1,n,init_fa));
-        root_sz.push_back(sz.build(1,n,init_sz));
-    }
-
-    // ===== 查找祖先（无路径压缩）=====
-    int find(int root, int x) {
-        int f = fa.query(root,1,n,x);
-        if (f == x) return x;
-        return find(root, f);
-    }
-
-    // ===== 合并 =====
-    void unite(int version, int x, int y) {
-
-        int fa_root = root_fa[version];
-        int sz_root = root_sz[version];
-
-        x = find(fa_root, x);
-        y = find(fa_root, y);
-
-        if (x == y) {
-            root_fa.push_back(fa_root);
-            root_sz.push_back(sz_root);
-            return;
+        if(i != par){
+            array<ll, 4> sa = func(child, i, a, v, ans);
+ 
+            if (sa[3] + 1 >= maxDepth) {
+                secondMaxDepth = maxDepth;
+                maxDepth = sa[3] + 1;
+            }
+            else if (sa[3] + 1 > secondMaxDepth) {
+                secondMaxDepth = sa[3] + 1;
+            }
+ 
+            maxAnsIncreaseWithOperationUsed = max(maxAnsIncreaseWithOperationUsed, sa[1] - sa[0]);
+ 
+            currAns[0] += sa[0] + sa[2];
+            currAns[1] += sa[0] + sa[2];
+            currAns[2] += sa[2];
         }
-
-        int sx = sz.query(sz_root,1,n,x);
-        int sy = sz.query(sz_root,1,n,y);
-
-        if (sx < sy) swap(x,y);
-
-        // y 挂到 x
-        int new_fa =
-            fa.update(fa_root,1,n,y,x);
-
-        int new_sz =
-            sz.update(sz_root,1,n,x,sx+sy);
-
-        root_fa.push_back(new_fa);
-        root_sz.push_back(new_sz);
     }
-
-    // ===== 是否连通 =====
-    bool same(int version, int x, int y) {
-        int root = root_fa[version];
-        return find(root,x) == find(root,y);
+ 
+    currAns[1] += maxAnsIncreaseWithOperationUsed;
+    currAns[3] = maxDepth;
+ 
+    for (auto i:a[child])
+    {
+        if(i != par){
+            ll cAns = ans[i][0];
+            ll cSum = ans[i][2];
+            ll cd = ans[i][3] + 1;
+ 
+            ll maxDepthFromOtherSubtrees = maxDepth;
+ 
+            if (cd == maxDepth) {
+                maxDepthFromOtherSubtrees = secondMaxDepth;
+            }
+ 
+            currAns[1] = max(currAns[1], currAns[0] + maxDepthFromOtherSubtrees * cSum);
+        }
     }
-};
-
-void solve() {
-    int n; cin >> n;
-    vector<int> a(n);
-
-    //初始化
-    PDSU dsu(n);
-    //hebing
-    int version,  x,  y;
-    dsu.unite(version, x, y);
-
-    //查询 在该版本是否联通
-    dsu.same(version, x, y);
-
-} 
-
-int main() {
-    
-    __BUFF__
-
-    int _ = 1;
-    // cin >> _;
-
-    while (_--) {
-        solve();
-        // cout << "-----------\n";
-    }
-
-    return 0;
+ 
+    ans[child] = currAns;
+ 
+    return currAns;
 }
-/*
-┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
-│Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│
-└───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘
-┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐
-│~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│
-├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤
-│ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│
-├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘
-│ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │              
-├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐    
-│ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │    
-├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐
-│Ctrl │Win │Alt │         Space         │Alt │ Fn │Menu│Ctrl│ │ ← │ ↓ │ → │
-└─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘
-
-
-  /\_/\
- (= ._.)
- / >  \>
-
-
-
-*/ 
+ 
+void solve(){
+ 
+    ll n, e;
+    cin >> n;
+    e = n-1; // For Tree
+ 
+    // For Graph;
+    // cin >> e; 
+ 
+    vector<ll> v (n+1);
+ 
+    for (ll i = 1; i <= n; i++)
+    {
+        cin >> v[i];
+    }
+ 
+    vector<vector<ll>> a (n+1);
+ 
+    for (ll i = 0; i < e; i++)
+    {
+        ll u, v;
+        cin >> u >> v;
+        a[u].push_back(v);
+        a[v].push_back(u);
+    }
+ 
+    vector<array<ll, 4>> ans (n+1);
+    
+    func(1, 1, a, v, ans);
+ 
+    for (ll i = 1; i <= n; i++)
+    {
+        cout << ans[i][1] << " ";
+    }
+    cout << "\n";
+}
+ 
+int main() { 
+    
+    ios_base::sync_with_stdio(false);
+	cin.tie(NULL); cout.tie(NULL);
+ 
+    ll T = 1;
+    
+    cin >> T;
+    
+    while (T--)
+    {
+        solve();
+    }
+    
+    return 0;
+ 
+}

@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2181/A
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,27 +12,53 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    int n, m;
+    cin >> n >> m;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    vector<int> cnt(26, 0);
+
+    vector<string> s(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> s[i];
+        for (auto ss : s[i]) {
+            // cout << ss - 'A' << ' ';
+            ++cnt[ss - 'A'];
+        }
+        // cout << '\n';
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+    for (int i = 0; i < n; ++i) {
+        map<int, int> ccnt;
+        for (auto ss : s[i]) {
+            ++ccnt[ss - 'A'];
         }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
-    }
 
-    cout << cnt << '\n';
+        int tag = 0;
+        int ans = 0;
+        for (auto [ch, num] : ccnt) {
+            if (num == cnt[ch]) {
+                // cout << "fk1\n";
+                tag = 1;
+                break;
+            }
+            else {
+                int temp = (cnt[ch] - 1) / (cnt[ch] - num);
+                if (temp > m) {
+                    // cout << "fk2\n";
+                    // cout << temp << ' ' << m << ' ' << num << '\n';
+                    tag = 1; 
+                    break;
+                }
+                if (i == 2 && temp == 1) {
+                    // cout << '\n' << ch << ' ' << cnt[ch] << ' ' << num << '\n';
+                }
+                ans = max(temp, ans);
+            }
+        }
+
+        if (tag) cout << "-1 ";
+        else cout << m - ans << ' ';
+    }
 } 
 
 int main() {
@@ -40,7 +66,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

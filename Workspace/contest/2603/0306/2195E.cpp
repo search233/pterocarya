@@ -1,4 +1,4 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/2195/E
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -10,29 +10,61 @@ using ull = uint64_t;
 using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
+const ll MOD = (ll)1e9 + 7;
+
+ll mod(ll num) {
+    num %= MOD;
+    if (num < 0) num += MOD;
+    return num;
+}
 
 void solve() {
     int n; cin >> n;
-    vector<int> a(n + 1);
+    vector<int> fa(n + 1);
+    vector<arr2> son(n + 1);
 
     for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
-    }
+        int ls, rs;
+        cin >> ls >> rs;
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
+        if (ls) {
+            son[i][0] = ls;
+            fa[ls] = i;
         }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
+        if (rs) {
+            son[i][1] = rs;
+            fa[rs] = i;
         }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
     }
+    son[0][0] = 1;
+    fa[1] = 0; 
 
-    cout << cnt << '\n';
+    vector<ll> ans(n + 1);
+    int dfn = 0;
+    auto dfs1 = [&](auto& dfs1, int u) -> void {
+        ++dfn;
+        ans[u] = dfn;
+        // cout <<"dfn = " <<  dfn << ' ' << u << '\n';
+        if (son[u][0]) dfs1(dfs1, son[u][0]);
+        if (son[u][1]) dfs1(dfs1, son[u][1]);
+        ans[u] = dfn - ans[u];
+        // cout <<"dfn = " <<  dfn << ' ' << u << '\n';
+        ++dfn;
+    };
+
+    dfs1(dfs1, 1);
+    
+    auto dfs2 = [&](auto& dfs2, int u) -> void {
+        ans[u] = mod(ans[u] + ans[fa[u]] + 1);
+        if (son[u][0]) dfs2(dfs2, son[u][0]);
+        if (son[u][1]) dfs2(dfs2, son[u][1]);
+    };
+
+    dfs2(dfs2, 1);
+
+    for (int i = 1; i <= n ; ++i) {
+        cout << ans[i] << " \n"[i == n];
+    }
 } 
 
 int main() {

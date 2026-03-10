@@ -1,4 +1,6 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -9,30 +11,88 @@ using uint = uint32_t;
 using ull = uint64_t;
 using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
+const int INF = 1e9;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    int b, n, m, k;
+    cin >> b >> n >> m >> k;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    vector e(n + 1, vector<arr3>());
+    for (int i = 0; i < m; ++i) {
+        int u, v, w1, w2;
+        cin >> u >> v >> w1 >> w2;
+        e[u].push_back({v, w1, w2});
+        e[v].push_back({u, w1, w2});
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
-    }
+    vector<int> dis(n + 1);
+    vector<int> happy(n + 1);
 
-    cout << cnt << '\n';
+    auto dij = [&](int s) -> vector<int> {
+        priority_queue<arr2, vector<arr2>, greater<>> pq;
+        pq.push({0, s});
+
+        fill(dis.begin(), dis.end(), INF);
+        fill(happy.begin(), happy.end(), 0);
+        happy[s] = 0;
+        dis[s] = 0;
+
+        while (!pq.empty()) {
+            auto [d, u] = pq.top();
+            pq.pop();
+
+            if (d > dis[u]) continue;
+
+            for (auto [v, w1, w2] : e[u]) {
+                if (dis[v] > dis[u] + w1) {
+                    dis[v] = dis[u] + w1;
+                    happy[v] = happy[u] + w2;
+                    pq.push({dis[v], v});
+                }
+                else if (dis[v] == dis[u] + w1) {
+                    happy[v] = max(happy[v], happy[u] + w2);
+                }
+            }
+        }
+
+        vector<int> res;
+        for (int i = 1; i <= n; ++i) {
+            if (dis[i] <= b && i != s) res.push_back(i);
+        }
+        return res;
+    };
+
+    for (int i = 0; i < k; ++i) {
+        int s; cin >> s;
+        vector<int> vec = dij(s);
+        if (vec.size() == 0) {
+            cout << "T_T\n";
+            continue;
+        }
+
+        int mood = 0;
+        for (int j = 0; j < vec.size(); ++j) {
+            if (j) cout << ' ';
+            cout << vec[j];
+            mood = max(mood, happy[vec[j]]);
+        }
+        cout << '\n';
+
+        int tag = 1;
+        for (auto j : vec) {
+            if (happy[j] == mood) {
+                if (tag) {
+                    tag = 0;
+                    cout << j;
+                }
+                else {
+                    cout << ' ' << j;
+                }
+            }
+        }
+        cout << '\n';
+    }
 } 
 
 int main() {
@@ -40,7 +100,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

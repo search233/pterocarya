@@ -1,4 +1,6 @@
-//https://codeforces.com/problemset/problem/2202/C1
+//https://codeforces.com/problemset/problem/ /
+//https://atcoder.jp/contests/ /tasks/ /
+//https://www.luogu.com.cn/problem/
 
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
@@ -12,35 +14,49 @@ using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+    int cnt = 0;
+    int n;
+    ll a, b;
+    cin >> n >> a >> b;
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+    auto dfs = [&](auto& dfs, ll num, int d) -> void {
+        if (d == n) {
+            if (num >= a && num <= b) {
+                cout << num << '\n';
+                ++cnt;
+            }                
+            return;
+        }
+
+        for (int i = 0; i <= 9; ++i) {
+            ll temp = num * 10 + i;
+            if (temp % (d + 1) == 0) {
+                dfs(dfs, temp, d + 1);
+            }
+        }
+    };
+
+    a = max(a, (ll)pow(10, n-1));
+    b = min(b, (ll)pow(10, n)-1);
+
+    int l = a / (ll)pow(10, n - 1);
+    int r = b / (ll)pow(10, n - 1);
+
+    for (int i = l; i <= r; ++i) {
+        dfs(dfs, i, 1); 
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
+    if (cnt == 0) {
+        cout << "No Solution";
     }
-
-    cout << cnt << '\n';
 } 
-
+ 
 int main() {
     
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

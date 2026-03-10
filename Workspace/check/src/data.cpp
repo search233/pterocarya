@@ -21,28 +21,19 @@ void solve() {
     // int n = rnd(3, 9);
     // int m = rnd(1, 10);
 
-    int n = rnd (5, 10);
-    int m = rnd(1, n + 2);
-    cout << n << ' ' << m << '\n';
+    // int n = 3;
+    int n = 6;
+    cout << n << '\n';
 
-    set<arr2> st;
-    for (int i = 0; i < m; ++i) {
-        int u = rnd(1, n);
-        int v = rnd(1, n);
-
-        while (u >= v || st.count({u, v})) {
-            u = rnd(1, n);
-            v = rnd(1, n);
-        }
-
-        st.insert({u, v});
-        cout << u << ' ' << v << '\n';
+    for (int i = 1; i <= n; ++i) {
+        int num = rnd(1, 50);
+        cout << num << " \n"[i == n];
     }
 }
 
 int main() {
     int _= 1;
-    // cout << _ << '\n';
+    cout << _ << '\n';
 
     solve();
 
