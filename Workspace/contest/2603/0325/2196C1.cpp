@@ -2,48 +2,81 @@
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+
 
 void solve() {
     int n; cin >> n;
+    vector e(n + 1, vector<int>());
 
-    vector<int> a(n);
-    for (int &x : a) cin >> x;
+    auto qu = [](int k) -> vector<int> {
+        cout << "? " << k << '\n';
+        cout.flush();
+        int q; cin >> q;
+        vector<int> vec(q);
+        for (auto& i : vec) cin >> i;
+        return vec;
+    };
 
-    ranges::sort(a);
-
-    vector<int> vis(n + 1);
-    vector<int> left;
-
-    for (int x : a) {
-        if (x >= 1 && x <= n && vis[x] == 0) {
-            vis[x] = 1;
-        } 
-        else {
-            left.push_back(x);
+    auto cal = [&](auto& cal, int u) -> int {
+        int size = 1;
+        for (auto v : e[u]) {
+            size += cal(cal, v);
         }
-    }
+        return size;
+    };
 
+    int k = 1;
     int ans = 0;
-    int p = 0;
+    vector<int> pre;
 
-    for (int k = 1; k <= n; k++) {
-        if (vis[k]) continue;
-
-        if (left[p] < 2 * k + 1) {
-            cout << -1 << '\n';
-            return;
+    while (1) {
+        vector<int> path = qu(k);
+        
+        if (path.size() == 0) {
+            break;
         }
 
-        ans++;
-        p++;
+        int pos = 0;
+        while (pos < min(path.size(), pre.size()) && path[pos] == pre[pos]) {
+            ++pos; 
+        }
+
+        
+        if (pos && pos < path.size()) {
+            int u = path[pos - 1];
+            int v = path[pos];
+
+            e[u].push_back(v);
+            ++ans;
+        }
+        pre = path;
+        
+        int size = cal(cal, path[pos]);
+        if (size == 1) {
+            ++k;
+        }
+        else {
+            k += size;
+        }
     }
 
-    cout << ans << '\n';
+    cout << "! " << ans << '\n';
+    for (int i = 1; i <= n; ++i) {
+        for (auto v : e[i]) {
+            cout << i << ' ' << v << '\n';
+        }
+    }
+    cout.flush();
 }
 
 int main() {
     
-    __BUFF__
+    // __BUFF__
 
     int _ = 1;
     cin >> _;

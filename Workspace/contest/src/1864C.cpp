@@ -3,42 +3,29 @@
 
 using namespace std;
 
+int lowbit(int x) {
+    return (-x) & x;
+}
+
 void solve() {
-    int n; cin >> n;
+    int x; cin >> x;
+    vector<int> res(1, x);
 
-    vector<int> a(n);
-    for (int &x : a) cin >> x;
-
-    ranges::sort(a);
-
-    vector<int> vis(n + 1);
-    vector<int> left;
-
-    for (int x : a) {
-        if (x >= 1 && x <= n && vis[x] == 0) {
-            vis[x] = 1;
-        } 
-        else {
-            left.push_back(x);
-        }
+    while (x != lowbit(x)) {
+        x -= lowbit(x);
+        res.push_back(x);
     }
 
-    int ans = 0;
-    int p = 0;
-
-    for (int k = 1; k <= n; k++) {
-        if (vis[k]) continue;
-
-        if (left[p] < 2 * k + 1) {
-            cout << -1 << '\n';
-            return;
-        }
-
-        ans++;
-        p++;
+    while (x > 1) {
+        x /= 2;
+        res.push_back(x);
     }
 
-    cout << ans << '\n';
+    cout << res.size() << '\n';
+    for (int i = 0; i < res.size(); ++i) {
+        cout << res[i] << ' ';
+    }
+    cout << '\n';
 }
 
 int main() {

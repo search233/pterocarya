@@ -1,45 +1,32 @@
 #include <bits/stdc++.h>
+
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
+using uint = uint32_t;
 
 void solve() {
-    int n; cin >> n;
+    uint n, k; cin >> n >> k;
 
-    vector<int> a(n);
-    for (int &x : a) cin >> x;
+    auto lowbit = [](uint x) { return (x & (-x)); };
 
-    ranges::sort(a);
-
-    vector<int> vis(n + 1);
-    vector<int> left;
-
-    for (int x : a) {
-        if (x >= 1 && x <= n && vis[x] == 0) {
-            vis[x] = 1;
-        } 
-        else {
-            left.push_back(x);
-        }
-    }
-
-    int ans = 0;
-    int p = 0;
-
-    for (int k = 1; k <= n; k++) {
-        if (vis[k]) continue;
-
-        if (left[p] < 2 * k + 1) {
-            cout << -1 << '\n';
-            return;
+    auto dfs = [&lowbit](auto&& dfs, uint n, uint k) -> int {
+        if (k == 0) {
+            return 0;
         }
 
-        ans++;
-        p++;
-    }
+        if (lowbit(n) == n) {
+            return k;
+        }
 
-    cout << ans << '\n';
-}
+        uint num = n + lowbit(n);
+        int ans1 = dfs(dfs, num, k - 1) + popcount(num ^ n) - 1;
+        int ans2 = dfs(dfs, num ^ lowbit(num), k);
+        return max(ans1, ans2);
+    };
+
+    cout << dfs(dfs, n, k) << '\n';
+} 
 
 int main() {
     

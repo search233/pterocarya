@@ -18,17 +18,8 @@ int rnd(int L, int R)
 }
 
 void solve() {
-    // int n = rnd(3, 9);
-    // int m = rnd(1, 10);
-
-    // int n = 3;
-    int n = 6;
-    cout << n << '\n';
-
-    for (int i = 1; i <= n; ++i) {
-        int num = rnd(1, 50);
-        cout << num << " \n"[i == n];
-    }
+    int num = rnd(1, 100);
+    cout << num << '\n';
 }
 
 int main() {
