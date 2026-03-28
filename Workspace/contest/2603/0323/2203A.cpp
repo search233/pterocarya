@@ -1,45 +1,22 @@
+//https://codeforces.com/problemset/problem/2203/A
+
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
+    int n, m, d;
+    cin >> n >> m >> d;
 
-    vector<int> a(n);
-    for (int &x : a) cin >> x;
-
-    ranges::sort(a);
-
-    vector<int> vis(n + 1);
-    vector<int> left;
-
-    for (int x : a) {
-        if (x >= 1 && x <= n && vis[x] == 0) {
-            vis[x] = 1;
-        } 
-        else {
-            left.push_back(x);
-        }
-    }
-
-    int ans = 0;
-    int p = 0;
-
-    for (int k = 1; k <= n; k++) {
-        if (vis[k]) continue;
-
-        if (left[p] < 2 * k + 1) {
-            cout << -1 << '\n';
-            return;
-        }
-
-        ans++;
-        p++;
-    }
-
-    cout << ans << '\n';
-}
+    cout << (n + d / m) / (d / m + 1) << '\n';
+} 
 
 int main() {
     
@@ -63,5 +40,6 @@ int main() {
  ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
  ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
  █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
-░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
 */

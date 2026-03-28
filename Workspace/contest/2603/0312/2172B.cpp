@@ -1,52 +1,75 @@
+//https://codeforces.com/problemset/problem/2172/B
+
 #include <bits/stdc++.h>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr4 = array<int, 4>;
+const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
+    int n, m, l, x, y;
+    cin >> n >> m >> l >> x >> y;
 
-    vector<int> a(n);
-    for (int &x : a) cin >> x;
+    vector<arr4> a;
+    for (int i = 0; i < n; ++i) {
+        int s, t; cin >> s >> t;
+        a.push_back({s, t, s, 0});
+        a.push_back({s, t, t, 2});
+    }
 
-    ranges::sort(a);
+    vector<double> ans(m + 1); 
+    for (int i = 1; i <= m; ++i) {
+        int p; cin >> p;
+        ans[i] = (1.0 * l - p) / y;
+        a.push_back({i, 0, p, 1});
+    }   
+    ranges::sort(a, []
+        (arr4 x, arr4 y) {
+            if (x[2] != y[2]) {
+                return x[2] < y[2];
+            }
+            return x[3] < y[3];
+        });   
 
-    vector<int> vis(n + 1);
-    vector<int> left;
+    auto cmp = [&](arr2 a, arr2 b) {
+        double aa = (1.0 * l - a[1]) / y + (1.0 * a[1] - a[0]) / x;
+        double bb = (1.0 * l - b[1]) / y + (1.0 * b[1] - b[0]) / x;
+        return aa < bb;
+    };
+    multiset<arr2, decltype(cmp)> st(cmp);
 
-    for (int x : a) {
-        if (x >= 1 && x <= n && vis[x] == 0) {
-            vis[x] = 1;
+    for (auto[s, t, pos, tag] : a) {
+        // cout << s << ' ' << t << ' ' << pos << '\n';
+        if (tag == 1 && !st.empty()) {
+            auto [a, b] = *st.begin();
+            double num = (1.0 * l - b) / y + (1.0 * b - a) / x;
+            ans[s] = min(ans[s], num);
+        }
+        else if (pos == s) {
+            st.insert({s, t});
         } 
-        else {
-            left.push_back(x);
+        else if (pos == t && t){
+            st.erase(st.find({s, t}));
         }
     }
 
-    int ans = 0;
-    int p = 0;
-
-    for (int k = 1; k <= n; k++) {
-        if (vis[k]) continue;
-
-        if (left[p] < 2 * k + 1) {
-            cout << -1 << '\n';
-            return;
-        }
-
-        ans++;
-        p++;
+    for (int i = 1; i <= m; ++i) {
+        cout << fixed << setprecision(10) << ans[i] << '\n';
+        // printf("%.9f\n", ans[i]);
     }
-
-    cout << ans << '\n';
-}
+} 
 
 int main() {
     
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();
@@ -63,5 +86,6 @@ int main() {
  ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
  ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
  █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
-░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
+
 */

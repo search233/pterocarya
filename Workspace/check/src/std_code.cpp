@@ -1,71 +1,47 @@
-#include<bits/stdc++.h>
-#define int long long
+#include <bits/stdc++.h>
 using namespace std;
-using ll = long long;
-using i128 = __int128;
-using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
-const int N = (int)2e5 + 9;
-const int M = (int)1e5 + 9;
-const int mod = (int)1e9 + 7;
+#define int long long
 
-void solve() {
-    int n;
-    cin >> n;
-    vector<int> a(n + 5);
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
+void solve () {
+    // //cout << (1 << 30) << "\n";
+    // for (int i = (1 << 27); i >= 0; i--) {
+    //     if (i % 3 == 0 && i % 2 == 0) {
+    //         if ((i / 2) != sqrt(i / 2) * sqrt(i / 2)) continue;
+    //         for (int j = 1; j < sqrt(i / 3); j++) {
+    //             if (j * j * j == i / 3) {
+    //                 cout << i << "\n";
+    //                 return ;
+    //             }
+    //         }
+    //     }
+    // }
+    int n; cin >> n;
+    bool f1 = 0, f2 = 0;
+    for (int p = 1; p * p <= n; p++) {
+        if (2 * p * p == n) {
+            f1 = 1;
+        }
+        if (3 * p * p * p == n) {
+            f2 = 1;
+        }
     }
-    int mn = a[1];
-    int ans = 1;
-    bool f = 0, ff = 0;
-    for (int i = 2; i <= n; i++) {
-        if (a[i] > a[i - 1] + 1) {
-            f = 0;
-            ff = 0;
-            mn = a[i];
-            ans++;
-            continue;
-        }
-        // if (ff && a[i] > a[i - 1]) {
-        //     f = 0;
-        //     ff = 0;
-        //     mn = a[i];
-        //     ans++;
-        //     continue;
-        // }
-        if (a[i] == a[i - 1] + 1) {
-            f = 1;
-            continue;
-        }
-        if (f && a[i] == a[i - 1]) {
-            continue;
-        }
-        if (f && a[i] >= mn + 1) {
-            ff = 1;
-            continue;
-        }
-        f = 0;
-        ff = 0;
-        mn = a[i];
-        ans++;
+    if (f1 && f2) {
+        cout << n << " is a triple flower\n";
     }
-    cout << ans << "\n";
+    else if (f1) {  
+        cout << n << " is a double flower\n";
+    }
+    else cout << n << " is " << n << "\n";
+        
 }
 
-signed main()
-{
-    ios::sync_with_stdio(false);
+signed main () {
+    ios::sync_with_stdio(0);
     cin.tie(0);
     int _ = 1;
     cin >> _;
-    while(_--) {
+    while (_--) {
         solve();
     }
     return 0;
 }
-/*
-*   /\_/\
-*  (= ._.)
-*  / >  \>
-*/

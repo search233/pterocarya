@@ -2,43 +2,71 @@
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
 
 void solve() {
-    int n; cin >> n;
+    int m; cin >> m;
 
-    vector<int> a(n);
-    for (int &x : a) cin >> x;
-
-    ranges::sort(a);
-
-    vector<int> vis(n + 1);
-    vector<int> left;
-
-    for (int x : a) {
-        if (x >= 1 && x <= n && vis[x] == 0) {
-            vis[x] = 1;
-        } 
-        else {
-            left.push_back(x);
+    map<int, int> mp;
+    vector<int> a;
+    vector array(m + 1, vector<int>());
+    for (int i = 1; i <= m; ++i) {
+        int n; cin >> n;
+        
+        for (int j = 1; j <= n; ++j) {
+            int num; cin >> num;
+            a.push_back(num);
+            ++mp[num];
         }
     }
 
-    int ans = 0;
-    int p = 0;
-
-    for (int k = 1; k <= n; k++) {
-        if (vis[k]) continue;
-
-        if (left[p] < 2 * k + 1) {
-            cout << -1 << '\n';
+    for (auto [num, cnt] : mp) {
+        if (cnt & 1) {
+            cout << "NO";
             return;
         }
-
-        ans++;
-        p++;
     }
 
-    cout << ans << '\n';
+    a.erase(unique(a.begin(), a.end()), a.end());
+    unordered_map<int, int> id;
+    for (int i = 0; i < a.size(); ++i) {
+        id[a[i]] = i + m + 1;
+    }
+
+    vector e(m + 1 + a.size(), vector<arr2>());
+    for (int i = 1; i <= m; ++i) {
+        int u = i;
+        for (auto x : array[u]) {
+            int v = id[x];
+
+            e[u].push_back({v, (int)e[v].size()});
+            e[v].push_back({u, (int)e[u].size() - 1});
+        }
+    }
+
+    vector<int> pos(m + 1);
+    vector<string> res(m + 1);
+
+    auto dfs(auto&& dfs, int u) -> void {
+        int& i = pos[u];
+
+        while (i < e[u].size()) {
+            int v = e[u][i][0];
+
+            if (v == -1) {
+                ++i;
+                continue;
+            }
+
+            
+        }
+    }
+
 }
 
 int main() {
@@ -46,7 +74,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    cin >> _;
+    // cin >> _;
 
     while (_--) {
         solve();

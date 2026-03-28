@@ -20,7 +20,7 @@ void solve() {
     }
     
     stack<arr2> st;
-    vector<int> idx(n + 1);
+    vector<ll> idx(n + 1);
     for (int i = n; i > 0; --i) {
         while (!st.empty() && a[i] + 1 == st.top()[1]) {
             idx[st.top()[0]] = i;
@@ -30,7 +30,7 @@ void solve() {
     }
 
     ll ans = 0;
-    for (int i = 1; i <= n; ++i) {
+    for (ll i = 1; i <= n; ++i) {
         ans += (i - idx[i]) * (n - i + 1);
     }
     cout << ans << '\n';

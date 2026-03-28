@@ -1,62 +1,55 @@
-//https://codeforces.com/problemset/problem/2202/C1
-
 #include <bits/stdc++.h>
-#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
-
 using namespace std;
-using ll = long long;
-using uint = uint32_t;
-using ull = uint64_t;
-using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
-const double PI = acos(-1.0);
+#define int long long
 
-void solve() {
-    int n; cin >> n;
-    vector<int> a(n + 1);
+void solve () {
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int x;
+        cin >> x;
+        int a = x / 2;
+        int aa = x % 2;
+        bool f1 = 0;
+        if (aa == 0) {
+            if (a == (int)sqrt(a) * sqrt(a)) {
+                f1 = 1;
+                cout <<sqrt(a) <<  "   !!!!\n";
+            }
+        }
 
-    for (int i = 1; i <= n; ++i) {
-        cin >> a[i];
+        int b = x / 3;
+        int bb = x % 3;
+        bool f2 = 0;
+        if (bb == 0) {
+            for (int j = sqrt(x); j >= 0; j--) {
+                if (j * j * j == b) {
+                    f2 = 1;
+                    break;
+                }
+            }
+        }
+        if (f1 && f2) {
+            cout << x << " is a triple flower\n";
+        }
+        else if (f1) {  
+            cout << x << " is a double flower\n";
+        }
+        //else if (f2) cout << x << " is a triple flower\n";
+        else cout << x << " is " << x << "\n";
+
     }
 
-    int cnt = 1;
-    arr2 tag = {a[1], a[1]};
-    for (int i = 2; i <= n; ++i) {
-        if (a[i] > tag[0] && a[i] <= tag[1] + 1) {
-            tag[1] = max(tag[1], a[i]);
-        }
-        else {
-            tag[0] = tag[1] = a[i];
-            ++cnt;
-        }
-        // cout << tag[0] << ' ' << tag[1] << ' ' << cnt << '\n';
-    }
-
-    cout << cnt << '\n';
-} 
-
-int main() {
     
-    __BUFF__
+}
 
+signed main () {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
     int _ = 1;
-    cin >> _;
-
+    //cin >> _;
     while (_--) {
         solve();
-        // cout << "-----------\n";
     }
-
     return 0;
 }
-/*
- ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
-░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
- ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
- ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
- ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
- ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
- █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
-░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░ 
-
-*/
