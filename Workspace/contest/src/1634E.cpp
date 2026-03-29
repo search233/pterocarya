@@ -14,12 +14,16 @@ void solve() {
 
     map<int, int> mp;
     vector<int> a;
+    vector<string> res(1);
+
     vector array(m + 1, vector<int>());
+
     for (int i = 1; i <= m; ++i) {
         int n; cin >> n;
-        
+        res.push_back(string(n, ' '));
         for (int j = 1; j <= n; ++j) {
             int num; cin >> num;
+            array[i].push_back(num);
             a.push_back(num);
             ++mp[num];
         }
@@ -32,6 +36,7 @@ void solve() {
         }
     }
 
+    ranges::sort(a);
     a.erase(unique(a.begin(), a.end()), a.end());
     unordered_map<int, int> id;
     for (int i = 0; i < a.size(); ++i) {
@@ -41,6 +46,7 @@ void solve() {
     vector e(m + 1 + a.size(), vector<arr2>());
     for (int i = 1; i <= m; ++i) {
         int u = i;
+
         for (auto x : array[u]) {
             int v = id[x];
 
@@ -49,24 +55,39 @@ void solve() {
         }
     }
 
-    vector<int> pos(m + 1);
-    vector<string> res(m + 1);
+    vector<int> pos(m + 1 + a.size());
+    
+    auto dfs = [&](auto&& dfs, int u) -> void {
 
-    auto dfs(auto&& dfs, int u) -> void {
-        int& i = pos[u];
-
-        while (i < e[u].size()) {
-            int v = e[u][i][0];
+        while (pos[u] < e[u].size()) {
+            auto [v, p] = e[u][pos[u]];
 
             if (v == -1) {
-                ++i;
+                ++pos[u];
                 continue;
             }
 
-            
-        }
-    }
+            e[u][pos[u]][0] = -1;
+            e[v][p][0] = -1;
 
+            if (u <= m) {
+                res[u][pos[u]] = 'L';
+            }
+            else {
+                res[v][p] = 'R';
+            }
+
+            ++pos[u];
+            dfs(dfs, v);    
+        }
+    };
+
+
+    cout << "YES\n";
+    for (int i = 1; i <= m; ++i) {
+        dfs(dfs, i);
+        cout << res[i] <<  '\n';
+    }
 }
 
 int main() {
