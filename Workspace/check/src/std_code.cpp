@@ -1,47 +1,34 @@
-#include <bits/stdc++.h>
-using namespace std;
-#define int long long
-
-void solve () {
-    // //cout << (1 << 30) << "\n";
-    // for (int i = (1 << 27); i >= 0; i--) {
-    //     if (i % 3 == 0 && i % 2 == 0) {
-    //         if ((i / 2) != sqrt(i / 2) * sqrt(i / 2)) continue;
-    //         for (int j = 1; j < sqrt(i / 3); j++) {
-    //             if (j * j * j == i / 3) {
-    //                 cout << i << "\n";
-    //                 return ;
-    //             }
-    //         }
-    //     }
-    // }
-    int n; cin >> n;
-    bool f1 = 0, f2 = 0;
-    for (int p = 1; p * p <= n; p++) {
-        if (2 * p * p == n) {
-            f1 = 1;
+#include <iostream>
+#include <vector>
+#include <algorithm>
+constexpr int INF = 1'000'000'000;
+int n;
+std::vector<std::vector<std::vector<int>>> dp;
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cin >> n;
+    int even = n / 2;
+    std::vector<int> a(n);
+    for (int i = 0; i < n; ++i)
+        std::cin >> a[i];
+    dp.resize(n);
+    for (auto &v : dp)
+        v.assign(even + 1, std::vector<int>(2, INF));
+    if (even > 0 && (a[0] == 0 || a[0] % 2 == 0))
+        dp[0][even - 1][0] = 0;
+    if (a[0] == 0 || a[0] % 2 == 1)
+        dp[0][even][1] = 0;
+    for (int i = 1; i < n; ++i) {
+        for (int j = 0; j <= even; ++j) {
+            for (int x = 0; x < 2; ++x) {
+                if (j > 0 && (a[i] == 0 || a[i] % 2 == 0))
+                    dp[i][j - 1][0] = std::min(dp[i][j - 1][0], dp[i - 1][j][x] + (x == 1));
+                if (j < n - i && (a[i] == 0 || a[i] % 2 == 1))
+                    dp[i][j][1] = std::min(dp[i][j][1], dp[i - 1][j][x] + (x == 0));
+            }
         }
-        if (3 * p * p * p == n) {
-            f2 = 1;
-        }
     }
-    if (f1 && f2) {
-        cout << n << " is a triple flower\n";
-    }
-    else if (f1) {  
-        cout << n << " is a double flower\n";
-    }
-    else cout << n << " is " << n << "\n";
-        
-}
-
-signed main () {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    int _ = 1;
-    cin >> _;
-    while (_--) {
-        solve();
-    }
+    std::cout << std::min(dp[n - 1][0][0], dp[n - 1][0][1]) << "\n";
     return 0;
 }

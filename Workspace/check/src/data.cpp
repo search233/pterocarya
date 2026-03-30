@@ -18,15 +18,45 @@ int rnd(int L, int R)
 }
 
 void solve() {
-    int num = rnd(1, 100);
-    cout << num << '\n';
+    // 1. 生成灯泡数量 n (1 <= n <= 100)
+    int n = 12;
+    cout << n << '\n';
+
+    // 2. 生成 1 到 n 的排列
+    vector<int> a(n);
+    iota(a.begin(), a.end(), 1); // 填充 1, 2, 3... n
+
+    // 3. 随机决定有多少个灯泡掉落（即变成 0 的数量，0 到 n 之间）
+    int zero_count = rnd(0, n);
+
+    // 4. 将数组打乱，以便随机挑选被替换为 0 的灯泡
+    for (int i = n - 1; i > 0; --i) {
+        swap(a[i], a[rnd(0, i)]);
+    }
+
+    // 5. 将前 zero_count 个元素变成 0
+    for (int i = 0; i < zero_count; ++i) {
+        a[i] = 0;
+    }
+
+    // 6. 再次打乱数组，让 0 和剩下的非零数字在位置上完全随机分布
+    for (int i = n - 1; i > 0; --i) {
+        swap(a[i], a[rnd(0, i)]);
+    }
+
+    // 7. 输出最终生成的数据
+    for (int i = 0; i < n; ++i) {
+        cout << a[i] << (i == n - 1 ? "" : " ");
+    }
+    cout << '\n';
 }
 
 int main() {
     int _= 1;
-    cout << _ << '\n';
+    // cout << _ << '\n';
 
-    solve();
+    while (_--)
+        solve();
 
     return 0;
 }

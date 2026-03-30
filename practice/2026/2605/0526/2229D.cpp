@@ -1,0 +1,100 @@
+#include <bits/stdc++.h>
+#include <cassert>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+void solve() {
+    int n; cin >> n;
+    vector<arr2> a(n + 1);
+    vector<int> mn(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i][0];
+    }
+
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i][1];
+        mn[i] = min(a[i][0], a[i][1]);
+    }
+
+    vector<arr2> tree(n + 1);
+    stack<int> st;
+    int rt = 0;
+
+    for (int i = 1; i <= n; ++i) {
+        while (!st.empty() && mn[st.top()] < mn[i]) {
+            tree[i][0] = st.top();
+            st.pop();
+        }
+        if (!st.empty()) tree[st.top()][1] = i;
+        else rt = i;
+        st.push(i);        
+    }
+
+    auto cal = [&](const arr2& x, const arr2& y) -> arr2 {
+        int mnx = min(x[0], x[1]);
+        int mxx = max(x[0], x[1]);
+        int mny = min(y[0], y[1]);
+        int mxy = max(y[0], y[1]);
+        return {min(mxx, mxy), max(mnx, mny)};
+    };
+
+    auto dfs = [&](this auto&& dfs, int u) -> arr2 {
+        if (!tree[u][0] && !tree[u][1]) {
+            return a[u];
+        }
+
+        arr2 ls, rs;
+        if (tree[u][0]) ls = dfs(tree[u][0]);
+        if (tree[u][1]) rs = dfs(tree[u][1]);
+
+        if (!tree[u][0]) {
+            return cal(rs, a[u]);
+        }
+        else if (!tree[u][1]) {
+            return cal(ls, a[u]);
+        }
+        else {
+            if (min(ls[0], ls[1]) < min(rs[0], rs[1])) {
+                return cal(cal(a[u], ls), rs);
+            }
+            else {
+                return cal(cal(a[u], rs), ls);
+            }
+        }
+    };
+
+    arr2 ans = dfs(rt);
+    cout << min(ans[0], ans[1]) << '\n';
+}
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░
+*/

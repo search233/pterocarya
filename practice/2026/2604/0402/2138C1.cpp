@@ -1,0 +1,108 @@
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+void solve() {
+    int n, k; cin >> n >> k;
+    vector e(n + 1, vector<int>());
+
+    for (int i = 2; i <= n; ++i) {
+        int p; cin >> p;
+        e[p].push_back(i);
+    }
+
+    int lf = n;
+    vector<int> cnt(n + 1);
+    auto dfs = [&](auto&& dfs, int u, int d) -> void {
+        ++cnt[d];
+
+        if (e[u].empty()) {
+            lf = min(lf, d);
+            return;
+        }
+
+        for (auto v : e[u]) {
+            dfs(dfs, v, d + 1);
+        }
+    };
+    dfs(dfs, 1, 1);
+
+    map<int, int> mp;
+    
+    for (int i = 1; i <= n; ++i) {
+        if (cnt[i] == 0) break;
+        if (i <= lf) {
+            ++mp[cnt[i]];
+        }
+        else {
+            mp[1] += cnt[i];
+        }
+    }
+
+    vector<int> sz; 
+    auto f = [&](int num, int x) -> void {
+        int fac = 1;
+        while (x) {
+            if (x > fac) {
+                x -= fac;
+                sz.push_back(fac * num);
+            }
+            else {
+                sz.push_back(x * num);
+                return;
+            }
+            fac <<= 1;
+        }
+    };     
+
+    for (auto [num, x] : mp) {
+        // cout << num << ' ' << x << '\n';
+        f(num, x);
+    }
+
+    // for (auto i : sz) {
+    //     cout << i << ' ';
+    // }
+    // cout << '\n';
+
+    bitset<200010> dp;
+    dp[0] = 1;
+
+    for (auto w : sz) {
+        dp |= (dp << w);
+    }
+
+    cout << (dp[k] ? lf : lf - 1) << '\n';
+}
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░
+*/

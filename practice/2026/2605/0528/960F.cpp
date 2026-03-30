@@ -1,0 +1,85 @@
+#include <bits/stdc++.h>
+#include <cassert>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<int, 2>;
+using arr3 = array<int, 3>;
+const double PI = acos(-1.0);
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<arr3> e; //u v w
+
+    for (int i = 1; i <= m; ++i) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        e.push_back({u, v, w});
+    }
+    
+    vector mp(n + 1, map<int, int>());
+    vector<int> ans(n + 1, 0);
+
+    for (auto [u, v, w] : e) {
+        auto it = mp[u].lower_bound(w);
+        int len = 0;
+        if (it == mp[u].begin()) {
+            len = 1;
+            ans[v] = max(ans[v], 1);
+        }
+        else {
+            --it;
+            len = it->second + 1;
+            ans[v] = max(ans[v], len);
+        }
+
+        it = mp[v].upper_bound(w);
+        if (it != mp[v].begin() && prev(it)->second >= len) {
+            continue;
+        }
+
+        mp[v][w] = len;
+        it = mp[v].find(w);
+
+        auto nxt = next(it);
+        while (nxt != mp[v].end() && nxt->second <= len) {
+            nxt = mp[v].erase(nxt);
+        }
+    }
+
+    int mx = 0;
+    for (auto i : ans) {
+        mx = max(mx, i);
+    }
+    cout << mx << '\n';
+}
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░
+*/

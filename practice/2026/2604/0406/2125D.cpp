@@ -1,0 +1,101 @@
+#include <bits/stdc++.h>
+#define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
+
+using namespace std;
+using ll = long long;
+using uint = uint32_t;
+using ull = uint64_t;
+using arr2 = array<ll, 2>;
+using arr3 = array<ll, 3>;
+const double PI = acos(-1.0);
+
+const ll MOD = 998244353;
+
+ll mod(ll num) {
+    num %= MOD;
+    if (num < 0) num += MOD;
+    return num;
+}
+
+ll exgcd(ll a, ll b, ll &x, ll &y) {
+    if (b == 0) {
+        x = 1;
+        y = 0;
+        return a; // gcd(a, 0) = a
+    }
+    ll x1, y1;
+    ll g = exgcd(b, a % b, x1, y1);
+    // 回溯更新系数
+    x = y1;
+    y = x1 - (a / b) * y1;
+    return g;
+}
+
+ll inv(ll a) {
+    ll x, y;
+    ll g = exgcd(a, MOD, x, y);
+    if (g != 1) return -1; // 不存在逆元
+    return mod(x);
+}
+
+void solve() {
+    int m, n; cin>> n >> m;
+    vector<arr3> a(n);
+    map<int, vector<arr2>> mp;
+
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i][0] >> a[i][1];
+        ll p, q; cin >> p >> q;
+
+        a[i][2] = mod(p * inv(q));
+        mp[a[i][1]].push_back({a[i][0], a[i][2]});
+    }
+
+    vector<int> p(m + 1, 1);    
+    for (int i = 1; i <= m; ++i) {
+        p[i] = p[i - 1];
+        if (mp.count(i)) {
+            for (auto [l, pp] : mp[i]) {
+                p[i] = mod(mod(1 - pp) * p[i]);
+            }
+        }
+    }
+
+    vector<ll> dp(m + 1);
+    dp[0] = 1;
+    for (int i = 1; i <= m; ++i) {
+        if (mp.count(i)) {
+            for (auto [l, pp] : mp[i]) {
+                ll q = mod(mod(inv(mod(1 - pp)) * p[i]) * inv(p[l - 1]));
+                dp[i] = mod(mod(mod(dp[l - 1] * pp) * q) + dp[i]);   
+            }
+        }        
+    }
+
+    cout << dp[m] << '\n';
+}
+
+int main() {
+    
+    __BUFF__
+
+    int _ = 1;
+    // cin >> _;
+
+    while (_--) {
+        solve();
+        // cout << "-----------\n";
+    }
+
+    return 0;
+}
+/*
+ ███████████  ███████████ ██████████ ███████████      ███████      █████████    █████████   ███████████   █████ █████ ███████████
+░░███░░░░░███░█░░░███░░░█░░███░░░░░█░░███░░░░░███   ███░░░░░███   ███░░░░░███  ███░░░░░███ ░░███░░░░░███ ░░███ ░░███ ░█░░░░░░███ 
+ ░███    ░███░   ░███  ░  ░███  █ ░  ░███    ░███  ███     ░░███ ███     ░░░  ░███    ░███  ░███    ░███  ░░███ ███  ░     ███░  
+ ░██████████     ░███     ░██████    ░██████████  ░███      ░███░███          ░███████████  ░██████████    ░░█████        ███    
+ ░███░░░░░░      ░███     ░███░░█    ░███░░░░░███ ░███      ░███░███          ░███░░░░░███  ░███░░░░░███    ░░███        ███     
+ ░███            ░███     ░███ ░   █ ░███    ░███ ░░███     ███ ░░███     ███ ░███    ░███  ░███    ░███     ░███      ████     █
+ █████           █████    ██████████ █████   █████ ░░░███████░   ░░█████████  █████   █████ █████   █████    █████    ███████████
+░░░░░           ░░░░░    ░░░░░░░░░░ ░░░░░   ░░░░░    ░░░░░░░      ░░░░░░░░░  ░░░░░   ░░░░░ ░░░░░   ░░░░░    ░░░░░    ░░░░░░░░░░░
+*/
