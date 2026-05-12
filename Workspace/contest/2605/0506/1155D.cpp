@@ -6,12 +6,34 @@ using ll = long long;
 using uint = uint32_t;
 using ull = uint64_t;
 using arr2 = array<int, 2>;
-using arr3 = array<int, 3>;
+using arr3 = array<ll, 3>;
 const double PI = acos(-1.0);
 
 void solve() {
-    cout << 1 << '\n';
-}
+    ll n, x;
+    cin >> n >> x;
+
+    vector<ll> a(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+    }
+
+    arr3 ans = {};
+    vector<arr3> dp(n + 2);
+
+    for (int i = 1; i <= n; ++i) {
+        dp[i][0] = max(dp[i][0], dp[i - 1][0] + a[i]);
+        ans[0] = max(ans[0], dp[i][0]);
+
+        dp[i][1] = max({0ll, dp[i - 1][1], dp[i - 1][2]})   + a[i];
+        ans[1] = max(ans[1], dp[i][1]);
+
+        dp[i][2] = max({dp[i - 1][0], dp[i - 1][2], 0ll}) + a[i] * x;        
+        ans[2] = max(ans[2], dp[i][2]);
+    }
+
+    cout << max({ans[0], ans[1], ans[2]}) << '\n';
+} 
 
 int main() {
     
