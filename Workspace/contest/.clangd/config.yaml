@@ -1,8 +1,0 @@
-CompileFlags:
-  Add: [-std=c++23, -Wall]
-
-Diagnostics:
-  Suppress: [unused-variable]
-
-Index:
-  Background: true
