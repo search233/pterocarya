@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <cassert>
 #define __BUFF__ ios::sync_with_stdio(false);cin.tie(0);
 
 using namespace std;
@@ -9,34 +10,39 @@ using arr2 = array<int, 2>;
 using arr3 = array<int, 3>;
 const double PI = acos(-1.0);
 
-
+const ll MOD = (int)1e9 + 7;
+ll mod(ll num) {
+    num %= MOD;
+    if (num < 0) num += MOD;
+    return num;
+}
 
 void solve() {
-    string s1, s2;
-    cin >> s1 >> s2;
+    string s; cin >> s;
+    int n; n = s.length();
 
-    int n = s1.length();
-    int m = s2.length();
+    vector<int> lps(n + 5);
+    vector<ll> cnt(n + 5);
 
-    vector<int> border(m);
-
-    for (int l = 0, r = 1; r <= m; ++r) {
-        while (l && s2[l] != s2[r]) l = border[l - 1];
-        if (s2[l] == s2[r]) ++l;
-        border[r] = l;
+    for (int i = 1, j = 0; i < n; ++i) {
+        while (j && s[i] != s[j]) j = lps[j - 1];
+        if (s[i] == s[j]) ++j;
+        lps[i] = j;
+        cnt[i] = 1 + cnt[j];
+        cout << cnt[i] << " \n"[i == n - 1];
     }
 
-    for (int i = 0, j = 0; i < n; ++i) {
-        while (j && s1[i] != s2[j]) j = border[j - 1];
-        if (s1[i] == s2[j]) ++j;
-        if (j == m) {
-            cout << i - m + 1 << '\n';
-        }
+    ll ans = 1;
+    for (int i = 1, j = 0; i < n; ++i) {
+        while (j && s[i] != s[j]) j = lps[j - 1];
+        if (s[i] == s[j]) ++j;
+
+        while (j && j > (i + 1) / 2) j = lps[j - 1];
+
+        ans = mod(ans * (cnt[j] + 1));
     }
 
-    for (auto i : border) {
-        cout << i << ' ';
-    }
+    cout << ans << '\n';
 }
 
 int main() {
@@ -44,7 +50,7 @@ int main() {
     __BUFF__
 
     int _ = 1;
-    // cin >> _;
+    cin >> _;
 
     while (_--) {
         solve();

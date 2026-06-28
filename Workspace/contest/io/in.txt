@@ -1,2 +1,4 @@
-ABABABC
-ABA
+3
+aaaaa
+ab
+abcababc
